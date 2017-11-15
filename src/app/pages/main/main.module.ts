@@ -5,6 +5,7 @@ import {MainRoutingModule} from './main-routing.module';
 import {GroupsPageComponent} from './groups-page/groups-page.component';
 import {ProductsPageComponent} from './products-page/products-page.component';
 import {NgZorroAntdModule} from 'ng-zorro-antd';
+import {MainPageComponent} from './main-page/main-page.component';
 
 @NgModule({
   imports: [
@@ -12,7 +13,7 @@ import {NgZorroAntdModule} from 'ng-zorro-antd';
     MainRoutingModule,
     NgZorroAntdModule
   ],
-  declarations: [GroupsPageComponent, ProductsPageComponent]
+  declarations: [GroupsPageComponent, ProductsPageComponent, MainPageComponent]
 })
 export class MainModule {
 }

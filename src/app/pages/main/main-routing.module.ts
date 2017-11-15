@@ -3,18 +3,23 @@ import {RouterModule, Routes} from '@angular/router';
 import {GroupsPageComponent} from './groups-page/groups-page.component';
 import {ProductsPageComponent} from './products-page/products-page.component';
 import {NeedLoginGuard} from '../../need-login.guard';
+import {MainPageComponent} from './main-page/main-page.component';
 
 const routes: Routes = [{
   path: '',
-  redirectTo: 'groups'
-}, {
-  path: 'groups',
-  component: GroupsPageComponent,
-  canActivate: [NeedLoginGuard]
-}, {
-  path: 'products',
-  component: ProductsPageComponent,
-  canActivate: [NeedLoginGuard]
+  component: MainPageComponent,
+  children: [{
+    path: '',
+    redirectTo: 'groups'
+  }, {
+    path: 'groups',
+    component: GroupsPageComponent,
+    canActivate: [NeedLoginGuard]
+  }, {
+    path: 'products',
+    component: ProductsPageComponent,
+    canActivate: [NeedLoginGuard]
+  }]
 }];
 
 @NgModule({

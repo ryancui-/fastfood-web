@@ -1,0 +1,24 @@
+<nz-layout class="layout" style="height: 100%;">
+  <nz-header>
+    <div class="logo"></div>
+    <ul nz-menu [nzTheme]="'dark'" [nzMode]="'horizontal'" style="line-height: 64px;">
+      <li nz-menu-item routerLink="/groups" [nzSelected]="store.url === '/groups'" style="outline: none;">订单团</li>
+      <li nz-menu-item routerLink="/products" [nzSelected]="store.url === '/products'" style="outline: none;">菜单</li>
+      <li nz-submenu style="float: right;">
+        <span title><i class="anticon anticon-user"></i>{{store.user.username}}</span>
+        <ul>
+          <li nz-menu-item (click)="logout()">退出</li>
+        </ul>
+      </li>
+    </ul>
+  </nz-header>
+  <nz-content style="padding:0 50px;">
+    <div style="background:#fff; padding: 24px;margin: 12px;">
+      <router-outlet></router-outlet>
+    </div>
+  </nz-content>
+  <nz-footer style="text-align: center;">Fastfood Admin By ryancui-</nz-footer>
+</nz-layout>
+
+
+

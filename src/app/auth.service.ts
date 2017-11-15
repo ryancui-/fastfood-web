@@ -3,7 +3,7 @@ import {HttpClient} from '@angular/common/http';
 import 'rxjs/add/operator/map';
 import {Observable} from 'rxjs/Observable';
 import {NzMessageService} from 'ng-zorro-antd';
-import {BaseService} from '../../base.service';
+import {BaseService} from './base.service';
 
 @Injectable()
 export class AuthService extends BaseService {

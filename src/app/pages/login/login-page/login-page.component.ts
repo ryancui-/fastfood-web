@@ -3,7 +3,7 @@ import {Router} from '@angular/router';
 import {Md5} from 'ts-md5/dist/md5';
 import {FormBuilder, FormGroup, Validators} from '@angular/forms';
 import {animate, state, style, transition, trigger} from '@angular/animations';
-import {AuthService} from '../auth.service';
+import {AuthService} from '../../../auth.service';
 
 @Component({
   selector: 'login-page',

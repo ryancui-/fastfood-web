@@ -9,6 +9,7 @@ import {AppRoutingModule} from './app-routing.module';
 import {NeedLoginGuard} from './need-login.guard';
 import {Store} from './store';
 import {HttpClientModule} from '@angular/common/http';
+import {AuthService} from './auth.service';
 
 @NgModule({
   declarations: [
@@ -25,7 +26,8 @@ import {HttpClientModule} from '@angular/common/http';
   ],
   providers: [
     NeedLoginGuard,
-    Store
+    Store,
+    AuthService
   ],
   bootstrap: [AppComponent]
 })
