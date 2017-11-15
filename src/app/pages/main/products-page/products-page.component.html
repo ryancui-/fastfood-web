@@ -1,3 +1,132 @@
-<p>
-  products-page works!
-</p>
+<div style="margin: 12px;">
+  <button nz-button [nzType]="'primary'" [nzSize]="'large'" (click)="openDialog()">
+    <span>新增菜单</span>
+  </button>
+</div>
+
+<div>
+  <nz-table #nzTable [nzDataSource]="products" [nzPageSize]="10">
+    <thead nz-thead>
+    <tr>
+      <th nz-th><span>菜单名</span></th>
+      <th nz-th><span>类别</span></th>
+      <th nz-th><span>价格</span></th>
+      <th nz-th><span>操作</span></th>
+    </tr>
+    </thead>
+    <tbody nz-tbody>
+    <tr nz-tbody-tr *ngFor="let data of nzTable.data">
+      <td nz-td>
+        <a>{{data.name}}</a>
+      </td>
+      <td nz-td>{{data.category}}</td>
+      <td nz-td>{{data.price}}</td>
+      <td nz-td>123</td>
+    </tr>
+    </tbody>
+  </nz-table>
+</div>
+
+<ng-template #product_dialog>
+  <form nz-form [formGroup]="productForm" (submit)="saveProduct(!productForm.id)">
+    <div nz-form-item nz-row>
+      <div nz-form-label nz-col [nzSm]="4">
+        <label for="name" nz-form-item-required>菜单名</label>
+      </div>
+      <div nz-form-control nz-col [nzSm]="20" nzHasFeedback [nzValidateStatus]="productForm.get('name')">
+        <nz-input [nzSize]="'large'" formControlName="name" [nzId]="'name'"></nz-input>
+        <div nz-form-explain *ngIf="productForm.get('name').dirty && productForm.get('name').hasError('required')">
+          请填写菜单名
+        </div>
+      </div>
+    </div>
+
+    <div nz-form-item nz-row>
+      <div nz-form-label nz-col [nzSm]="4">
+        <label for="category">类别</label>
+      </div>
+      <div nz-form-control nz-col [nzSm]="20" [nzValidateStatus]="productForm.get('category')">
+        <nz-select style="width: 120px;" formControlName="category" nzAllowClear>
+          <nz-option *ngFor="let option of categoryOptions"
+                     [nzLabel]="option"
+                     [nzValue]="option">
+          </nz-option>
+        </nz-select>
+      </div>
+    </div>
+
+    <div nz-form-item nz-row>
+      <div nz-form-label nz-col [nzSm]="4">
+        <label for="price">价格</label>
+      </div>
+      <div nz-form-control nz-col [nzSm]="20" nzHasFeedback [nzValidateStatus]="productForm.get('price')">
+        <nz-input-number [nzMin]="1" formControlName="price"></nz-input-number>
+      </div>
+    </div>
+
+    <div nz-form-item nz-row>
+      <div nz-form-label nz-col [nzSm]="4">
+        <label for="part_of_month">所属旬度</label>
+      </div>
+      <div nz-form-control nz-col [nzSm]="20" [nzValidateStatus]="productForm.get('part_of_month')">
+        <nz-radio-group formControlName="part_of_month">
+          <label nz-radio-button [nzValue]="0">
+            <span>不限</span>
+          </label>
+          <label nz-radio-button [nzValue]="1">
+            <span>上旬</span>
+          </label>
+          <label nz-radio-button [nzValue]="2">
+            <span>中旬</span>
+          </label>
+          <label nz-radio-button [nzValue]="3">
+            <span>下旬</span>
+          </label>
+        </nz-radio-group>
+      </div>
+    </div>
+
+    <div nz-form-item nz-row>
+      <div nz-form-label nz-col [nzSm]="4">
+        <label for="day_of_week">每周特色</label>
+      </div>
+      <div nz-form-control nz-col [nzSm]="20" [nzValidateStatus]="productForm.get('day_of_week')">
+        <nz-radio-group formControlName="day_of_week">
+          <label nz-radio-button [nzValue]="0">
+            <span>不限</span>
+          </label>
+          <label nz-radio-button [nzValue]="1">
+            <span>一</span>
+          </label>
+          <label nz-radio-button [nzValue]="2">
+            <span>二</span>
+          </label>
+          <label nz-radio-button [nzValue]="3">
+            <span>三</span>
+          </label>
+          <label nz-radio-button [nzValue]="4">
+            <span>四</span>
+          </label>
+          <label nz-radio-button [nzValue]="5">
+            <span>五</span>
+          </label>
+          <label nz-radio-button [nzValue]="6">
+            <span>六</span>
+          </label>
+          <label nz-radio-button [nzValue]="7">
+            <span>日</span>
+          </label>
+        </nz-radio-group>
+      </div>
+    </div>
+
+    <div nz-form-item nz-row>
+      <div nz-form-label nz-col [nzSm]="4">
+        <label for="spicy">辣么</label>
+      </div>
+      <div nz-form-control nz-col [nzSm]="20" [nzValidateStatus]="productForm.get('spicy')">
+        <nz-switch formControlName="spicy"></nz-switch>
+      </div>
+    </div>
+  </form>
+</ng-template>

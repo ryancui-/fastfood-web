@@ -9,7 +9,7 @@ export class BaseService {
 
   protected apiHost = environment.apiHost;
 
-  get(url: string): Observable<object> {
+  get(url: string): Observable<any> {
     return this.httpClient.get(this.apiHost + url, {
       headers: new HttpHeaders({
         authorization: localStorage.getItem('token')
@@ -17,7 +17,7 @@ export class BaseService {
     });
   }
 
-  post(url: string, data: any): Observable<object> {
+  post(url: string, data: any): Observable<any> {
     return this.httpClient.post(this.apiHost + url, data, {
       headers: new HttpHeaders({
         authorization: localStorage.getItem('token')

@@ -6,12 +6,18 @@ import {GroupsPageComponent} from './groups-page/groups-page.component';
 import {ProductsPageComponent} from './products-page/products-page.component';
 import {NgZorroAntdModule} from 'ng-zorro-antd';
 import {MainPageComponent} from './main-page/main-page.component';
+import {ReactiveFormsModule} from '@angular/forms';
+import {ProductService} from './product.service';
 
 @NgModule({
   imports: [
     CommonModule,
+    ReactiveFormsModule,
     MainRoutingModule,
     NgZorroAntdModule
+  ],
+  providers: [
+    ProductService
   ],
   declarations: [GroupsPageComponent, ProductsPageComponent, MainPageComponent]
 })
