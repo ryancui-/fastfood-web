@@ -8,6 +8,7 @@ import {AppComponent} from './app.component';
 import {AppRoutingModule} from './app-routing.module';
 import {NeedLoginGuard} from './need-login.guard';
 import {Store} from './store';
+import {HttpClientModule} from '@angular/common/http';
 
 @NgModule({
   declarations: [
@@ -18,6 +19,7 @@ import {Store} from './store';
     AppRoutingModule,
     FormsModule,
     HttpModule,
+    HttpClientModule,
     BrowserAnimationsModule,
     NgZorroAntdModule.forRoot()
   ],

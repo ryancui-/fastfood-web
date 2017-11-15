@@ -1,3 +1,51 @@
-<p>
-  login-page works!
-</p>
+<div class="login-outter">
+  <div class="login-inner" [@loginFadeIn]="state">
+    <div class="header">
+      Fastfood Admin
+    </div>
+
+    <div class="form-box">
+      <form nz-form [formGroup]="loginForm" (submit)="login()">
+        <div nz-form-item>
+          <div nz-form-control [nzValidateStatus]="loginForm.get('username')">
+            <nz-input name="username" formControlName="username"
+                      nzId="username"
+                      [nzPlaceHolder]="'用户名'" [nzSize]="'large'">
+              <ng-template #prefix>
+                <i class="anticon anticon-user"></i>
+              </ng-template>
+            </nz-input>
+            <div nz-form-explain
+                 *ngIf="loginForm.get('username').dirty&&loginForm.get('username').hasError('required')">
+              请输入用户名
+            </div>
+          </div>
+        </div>
+        <div nz-form-item>
+          <div nz-form-control [nzValidateStatus]="loginForm.get('password')">
+            <nz-input name="password" formControlName="password"
+                      nzId="password"
+                      [nzType]="'password'" [nzPlaceHolder]="'密码'"
+                      [nzSize]="'large'">
+              <ng-template #prefix>
+                <i class="anticon anticon-lock"></i>
+              </ng-template>
+            </nz-input>
+            <div nz-form-explain
+                 *ngIf="loginForm.get('password').dirty&&loginForm.get('password').hasError('required')">
+              请输入密码
+            </div>
+          </div>
+        </div>
+        <div nz-form-item style="margin-bottom: 0;">
+          <div nz-form-control>
+            <button nz-button class="login-form-button"
+                    [nzType]="'primary'" [nzSize]="'large'"
+                    [disabled]="loginForm.invalid">登录
+            </button>
+          </div>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>
