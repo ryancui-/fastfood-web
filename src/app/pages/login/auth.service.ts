@@ -3,12 +3,14 @@ import {HttpClient} from '@angular/common/http';
 import 'rxjs/add/operator/map';
 import {Observable} from 'rxjs/Observable';
 import {NzMessageService} from 'ng-zorro-antd';
+import {BaseService} from '../../base.service';
 
 @Injectable()
-export class AuthService {
+export class AuthService extends BaseService {
 
-  constructor(private httpClient: HttpClient,
+  constructor(private hc: HttpClient,
               private msgService: NzMessageService) {
+    super(hc);
   }
 
   /**
@@ -18,7 +20,7 @@ export class AuthService {
    * @returns {Observable<T>}
    */
   login(username, password): Observable<boolean> {
-    return this.httpClient.post('http://localhost:8360/fastfood/api/auth/login', {
+    return this.httpClient.post(this.apiHost + '/auth/login', {
       username, password
     }).map((res: any) => {
       console.log(res);
