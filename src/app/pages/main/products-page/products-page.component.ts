@@ -1,5 +1,5 @@
 import {Component, OnInit, ViewChild} from '@angular/core';
-import {FormBuilder, Validators} from '@angular/forms';
+import {FormBuilder, FormGroup, Validators} from '@angular/forms';
 import {Router} from '@angular/router';
 import {NzMessageService, NzModalService} from 'ng-zorro-antd';
 import {ProductService} from '../product.service';
@@ -11,7 +11,7 @@ import {ProductService} from '../product.service';
 })
 export class ProductsPageComponent implements OnInit {
 
-  productForm;
+  productForm: FormGroup;
 
   @ViewChild('product_dialog')
   productDialogRef;
@@ -22,7 +22,11 @@ export class ProductsPageComponent implements OnInit {
     '每旬菜式', '明炉烧味', '天天靓汤'
   ];
 
+  tableLoading = false;
+  condition: any = {};
   products = [];
+  page = 1;
+  total = 0;
 
   isSaving = false;
 
@@ -34,6 +38,10 @@ export class ProductsPageComponent implements OnInit {
   }
 
   ngOnInit() {
+    this.condition = {
+      category: ''
+    };
+
     this.productForm = this.formBuilder.group({
       id: '',
       name: ['', Validators.required],
@@ -44,12 +52,25 @@ export class ProductsPageComponent implements OnInit {
       spicy: 0,
     });
 
-    this.listProduct();
+    this.listProduct(true);
   }
 
-  listProduct(condition?) {
-    this.productService.list(condition).subscribe(data => {
-      this.products = data;
+  listProduct(refresh) {
+    refresh ? this.page = 1 : this.page++;
+
+    const query: any = {
+      page: this.page
+    };
+
+    if (this.condition.category) {
+      query.category = this.condition.category;
+    }
+
+    this.tableLoading = true;
+    this.productService.list(query).subscribe(data => {
+      this.tableLoading = false;
+      this.total = data.total;
+      this.products = data.rows;
     });
   }
 
@@ -80,22 +101,34 @@ export class ProductsPageComponent implements OnInit {
   // 保存菜单
   saveProduct(newProduct: boolean) {
     const product = this.productForm.value;
+    product.spicy = product.spicy ? 1 : 0;
     console.log(product);
 
-    // if (newProduct) {
-    //   this.isSaving = true;
-    //   this.productService.add(product).subscribe(data => {
-    //     this.isSaving = false;
-    //     this.msgService.success('新增成功');
-    //     this.productDialog.destroy();
-    //   });
-    // } else {
-    //   this.isSaving = true;
-    //   this.productService.edit(product).subscribe(data => {
-    //     this.isSaving = false;
-    //     this.msgService.success('修改成功');
-    //     this.productDialog.destroy();
-    //   });
-    // }
+    if (newProduct) {
+      this.isSaving = true;
+      this.productService.add(product).subscribe(data => {
+        this.isSaving = false;
+        this.msgService.success('新增成功');
+        this.listProduct(true);
+        this.productDialog.destroy();
+      });
+    } else {
+      this.isSaving = true;
+      this.productService.edit(product).subscribe(data => {
+        this.isSaving = false;
+        this.msgService.success('修改成功');
+        this.listProduct(true);
+        this.productDialog.destroy();
+      });
+    }
+  }
+
+  // 改变状态
+  confirmChangeStatus(oldProduct) {
+    this.productService.changeStatus(oldProduct.id, oldProduct.valid ? 0 : 1)
+      .subscribe(data => {
+        this.msgService.success(oldProduct.valid ? '下架成功' : '上架成功');
+        this.listProduct(true);
+      });
   }
 }

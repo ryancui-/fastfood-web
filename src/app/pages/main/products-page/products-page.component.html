@@ -1,27 +1,55 @@
-<div style="margin: 12px;">
+<div style="margin-bottom: 12px;">
   <button nz-button [nzType]="'primary'" [nzSize]="'large'" (click)="openDialog()">
     <span>新增菜单</span>
   </button>
 </div>
 
 <div>
-  <nz-table #nzTable [nzDataSource]="products" [nzPageSize]="10">
+  <nz-table #nzTable [nzAjaxData]="products" [nzPageSize]="15"
+            nzSize="small" [nzShowTotal]="true" [nzTotal]="total"
+            [(nzPageIndex)]="page" (nzPageIndexChange)="listProduct()"
+            [nzLoading]="tableLoading">
     <thead nz-thead>
     <tr>
+      <th nz-th>#</th>
       <th nz-th><span>菜单名</span></th>
-      <th nz-th><span>类别</span></th>
+      <th nz-th>
+        <span>类别</span>
+        <nz-dropdown>
+          <i class="anticon anticon-filter" nz-dropdown></i>
+          <ul nz-menu>
+            <nz-radio-group [(ngModel)]="condition.category">
+              <li nz-menu-item *ngFor="let option of categoryOptions">
+                <label nz-radio [nzValue]="option">
+                  <span>{{option}}</span>
+                </label>
+              </li>
+            </nz-radio-group>
+          </ul>
+          <div nz-table-filter>
+            <span nz-table-filter-confirm (click)="listProduct(true)">OK</span>
+            <span nz-table-filter-clear (click)="condition.category = '';listProduct(true)">Reset</span>
+          </div>
+        </nz-dropdown>
+      </th>
       <th nz-th><span>价格</span></th>
       <th nz-th><span>操作</span></th>
     </tr>
     </thead>
     <tbody nz-tbody>
-    <tr nz-tbody-tr *ngFor="let data of nzTable.data">
-      <td nz-td>
-        <a>{{data.name}}</a>
-      </td>
+    <tr nz-tbody-tr *ngFor="let data of nzTable.data; let i = index;"
+        [class.invalid-product]="!data.valid">
+      <td nz-td>{{i+1}}</td>
+      <td nz-td>{{data.name}}</td>
       <td nz-td>{{data.category}}</td>
       <td nz-td>{{data.price}}</td>
-      <td nz-td>123</td>
+      <td nz-td>
+        <a (click)="openDialog(data)">编辑</a>
+        <span nz-table-divider></span>
+        <nz-popconfirm [nzTitle]="'确定吗？'" (nzOnConfirm)="confirmChangeStatus(data)">
+          <a nz-popconfirm>{{data.valid ? '下架' : '上架'}}</a>
+        </nz-popconfirm>
+      </td>
     </tr>
     </tbody>
   </nz-table>
@@ -59,7 +87,7 @@
       <div nz-form-label nz-col [nzSm]="4">
         <label for="price">价格</label>
       </div>
-      <div nz-form-control nz-col [nzSm]="20" nzHasFeedback [nzValidateStatus]="productForm.get('price')">
+      <div nz-form-control nz-col [nzSm]="20" [nzValidateStatus]="productForm.get('price')">
         <nz-input-number [nzMin]="1" formControlName="price"></nz-input-number>
       </div>
     </div>

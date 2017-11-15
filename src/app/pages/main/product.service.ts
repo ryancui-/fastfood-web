@@ -15,7 +15,7 @@ export class ProductService extends BaseService {
    * @returns {Observable<Object>}
    */
   list(condition) {
-    return this.post('/product/list', condition).map(res => res.data);
+    return this.post('/product/listAll', condition).map(res => res.data);
   }
 
   /**
