@@ -1,15 +1,21 @@
-import {Component, OnInit, QueryList, ViewChild, ViewChildren} from '@angular/core';
+import {Component, OnDestroy, OnInit, QueryList, ViewChild, ViewChildren} from '@angular/core';
 import {FormBuilder, FormGroup, Validators} from '@angular/forms';
 import {Router} from '@angular/router';
 import {NzInputDirectiveComponent, NzMessageService, NzModalService} from 'ng-zorro-antd';
 import {ProductService} from '../product.service';
+import {Subject} from 'rxjs/Subject';
+import 'rxjs/add/operator/debounceTime';
+import 'rxjs/add/operator/distinctUntilChanged';
+import 'rxjs/add/operator/mergeMap';
+import 'rxjs/add/observable/of';
+import 'rxjs/add/operator/delay';
 
 @Component({
   selector: 'app-products-page',
   templateUrl: './products-page.component.html',
   styleUrls: ['./products-page.component.scss']
 })
-export class ProductsPageComponent implements OnInit {
+export class ProductsPageComponent implements OnInit, OnDestroy {
 
   productForm: FormGroup;
 
@@ -21,6 +27,10 @@ export class ProductsPageComponent implements OnInit {
   categoryOptions = [
     '每旬菜式', '明炉烧味', '天天靓汤'
   ];
+
+  searchKeyUp = new Subject<any>();
+  keyUpSubscription;
+  inputLock = false;
 
   tableLoading = false;
   condition: any = {};
@@ -57,6 +67,20 @@ export class ProductsPageComponent implements OnInit {
     });
 
     this.listProduct('reload');
+
+    this.keyUpSubscription = this.searchKeyUp
+      .map(event => event.target.value)
+      .debounceTime(800)
+      .distinctUntilChanged()
+      .subscribe(_ => {
+        if (!this.inputLock) {
+          this.listProduct('reload');
+        }
+      });
+  }
+
+  ngOnDestroy() {
+    this.keyUpSubscription.unsubscribe();
   }
 
   listProduct(operation) {
@@ -74,6 +98,12 @@ export class ProductsPageComponent implements OnInit {
 
     if (this.condition.category) {
       query.category = this.condition.category;
+    }
+    if (this.condition.valid !== null) {
+      query.valid = this.condition.valid;
+    }
+    if (this.condition.q) {
+      query.q = this.condition.q;
     }
 
     this.tableLoading = true;
