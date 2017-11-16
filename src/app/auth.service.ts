@@ -45,4 +45,24 @@ export class AuthService extends BaseService {
       observable.next(true);
     });
   }
+
+  /**
+   * 检查用户名是否合法
+   * @param username
+   */
+  checkUsername(username: string) {
+    return this.httpClient.post(this.apiHost + '/auth/checkUsername', {
+      username
+    });
+  }
+
+  /**
+   * 注册新用户
+   * @param username
+   * @param password
+   * @param inviteCode
+   */
+  register(query) {
+    return this.httpClient.post(this.apiHost + '/auth/register', query);
+  }
 }

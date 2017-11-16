@@ -1,7 +1,9 @@
 <div class="login-outter">
-  <div class="login-inner" [@loginFadeIn]="state">
+  <div [style.display]="tab === 'login' ? 'block' : 'none'"
+       class="login-inner"
+       [@loginFadeIn]="loginBoxState">
     <div class="header">
-      Fastfood Admin
+      登录 Fastfood
     </div>
 
     <div class="form-box">
@@ -44,6 +46,92 @@
                     [disabled]="loginForm.invalid">登录
             </button>
           </div>
+        </div>
+        <div nz-form-item style="float: right;margin-top: 10px;">
+          <a (click)="switchTab()">我要注册</a>
+        </div>
+      </form>
+    </div>
+  </div>
+
+
+  <div [style.display]="tab === 'register' ? 'block' : 'none'"
+       class="login-inner"
+       [@loginFadeIn]="registerBoxState">
+    <div class="header">
+      注册 Fastfood
+    </div>
+
+    <div class="form-box">
+      <form nz-form [formGroup]="registerForm" (submit)="register()">
+        <div nz-form-item>
+          <div nz-form-control [nzValidateStatus]="registerForm.get('username')">
+            <nz-input name="username" formControlName="username"
+                      nzId="username"
+                      [nzPlaceHolder]="'用户名'" [nzSize]="'large'">
+              <ng-template #prefix>
+                <i class="anticon anticon-user"></i>
+              </ng-template>
+            </nz-input>
+            <div nz-form-explain
+                 *ngIf="registerForm.get('username').dirty && registerForm.get('username').hasError('required')">
+              请输入用户名
+            </div>
+            <div nz-form-explain
+                 *ngIf="registerForm.get('username').dirty && registerForm.get('username').hasError('has_admin')">
+              不能有 admin 出现
+            </div>
+            <div nz-form-explain
+                 *ngIf="registerForm.get('username').dirty && registerForm.get('username').hasError('has_one')">
+              用户名已注册
+            </div>
+          </div>
+        </div>
+
+        <div nz-form-item>
+          <div nz-form-control [nzValidateStatus]="registerForm.get('password')">
+            <nz-input name="password" formControlName="password"
+                      nzId="password"
+                      [nzType]="'password'" [nzPlaceHolder]="'密码'"
+                      [nzSize]="'large'">
+              <ng-template #prefix>
+                <i class="anticon anticon-lock"></i>
+              </ng-template>
+            </nz-input>
+            <div nz-form-explain
+                 *ngIf="registerForm.get('password').dirty && registerForm.get('password').hasError('required')">
+              请输入密码
+            </div>
+          </div>
+        </div>
+
+        <div nz-form-item>
+          <div nz-form-control [nzValidateStatus]="registerForm.get('inviteCode')">
+            <nz-input name="inviteCode" formControlName="inviteCode"
+                      nzId="inviteCode"
+                      [nzType]="'text'" [nzPlaceHolder]="'邀请码'"
+                      [nzSize]="'large'">
+              <ng-template #prefix>
+                <i class="anticon anticon-lock"></i>
+              </ng-template>
+            </nz-input>
+            <div nz-form-explain
+                 *ngIf="registerForm.get('inviteCode').dirty && registerForm.get('inviteCode').hasError('required')">
+              请输入邀请码
+            </div>
+          </div>
+        </div>
+
+        <div nz-form-item style="margin-bottom: 0;">
+          <div nz-form-control>
+            <button nz-button class="login-form-button"
+                    [nzType]="'primary'" [nzSize]="'large'"
+                    [disabled]="registerForm.invalid">注册
+            </button>
+          </div>
+        </div>
+        <div nz-form-item style="float: right;margin-top: 10px;">
+          <a (click)="switchTab()">我要登录</a>
         </div>
       </form>
     </div>
