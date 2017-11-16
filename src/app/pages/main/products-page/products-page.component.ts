@@ -1,7 +1,7 @@
-import {Component, OnInit, ViewChild} from '@angular/core';
+import {Component, OnInit, QueryList, ViewChild, ViewChildren} from '@angular/core';
 import {FormBuilder, FormGroup, Validators} from '@angular/forms';
 import {Router} from '@angular/router';
-import {NzMessageService, NzModalService} from 'ng-zorro-antd';
+import {NzInputDirectiveComponent, NzMessageService, NzModalService} from 'ng-zorro-antd';
 import {ProductService} from '../product.service';
 
 @Component({
@@ -28,6 +28,10 @@ export class ProductsPageComponent implements OnInit {
   page = 1;
   total = 0;
 
+  @ViewChildren('option_input') input: QueryList<NzInputDirectiveComponent>;
+  inputVisible;
+  optionValue;
+
   isSaving = false;
 
   constructor(private formBuilder: FormBuilder,
@@ -52,11 +56,17 @@ export class ProductsPageComponent implements OnInit {
       spicy: 0,
     });
 
-    this.listProduct(true);
+    this.listProduct('reload');
   }
 
-  listProduct(refresh) {
-    refresh ? this.page = 1 : this.page++;
+  listProduct(operation) {
+    switch (operation) {
+      case 'refresh':
+        break;
+      case 'reload':
+        this.page = 1;
+        break;
+    }
 
     const query: any = {
       page: this.page
@@ -71,6 +81,9 @@ export class ProductsPageComponent implements OnInit {
       this.tableLoading = false;
       this.total = data.total;
       this.products = data.rows;
+
+      this.inputVisible = new Array(data.rows.length).fill(false);
+      this.optionValue = new Array(data.rows.length).fill('');
     });
   }
 
@@ -109,7 +122,7 @@ export class ProductsPageComponent implements OnInit {
       this.productService.add(product).subscribe(data => {
         this.isSaving = false;
         this.msgService.success('新增成功');
-        this.listProduct(true);
+        this.listProduct('refresh');
         this.productDialog.destroy();
       });
     } else {
@@ -117,7 +130,7 @@ export class ProductsPageComponent implements OnInit {
       this.productService.edit(product).subscribe(data => {
         this.isSaving = false;
         this.msgService.success('修改成功');
-        this.listProduct(true);
+        this.listProduct('refresh');
         this.productDialog.destroy();
       });
     }
@@ -128,7 +141,33 @@ export class ProductsPageComponent implements OnInit {
     this.productService.changeStatus(oldProduct.id, oldProduct.valid ? 0 : 1)
       .subscribe(data => {
         this.msgService.success(oldProduct.valid ? '下架成功' : '上架成功');
-        this.listProduct(true);
+        this.listProduct('refresh');
       });
+  }
+
+  deleteOptions(option) {
+    console.log(option);
+    this.productService.deleteOption(option.id).subscribe(data => {
+      this.listProduct('refresh');
+    });
+  }
+
+  showInput(i): void {
+    this.inputVisible[i] = true;
+    setTimeout(() => {
+      this.input.toArray()[i].nativeElement.focus();
+    }, 10);
+  }
+
+  handleInputConfirm(product, i): void {
+    if (this.optionValue[i]) {
+      // 新增选项
+      this.productService.addOption(product.id, this.optionValue[i])
+        .subscribe(data => {
+          this.listProduct('refresh');
+        });
+    }
+    this.optionValue[i] = '';
+    this.inputVisible[i] = false;
   }
 }

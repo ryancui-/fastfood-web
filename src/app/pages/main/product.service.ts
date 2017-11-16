@@ -46,4 +46,26 @@ export class ProductService extends BaseService {
       id, valid
     }).map(res => res.data);
   }
+
+  /**
+   * 增加菜单选项
+   * @param productId
+   * @param optionName
+   */
+  addOption(productId, optionName) {
+    return this.post('/product/createOption', {
+      productId, optionName
+    }).map(res => res.data);
+  }
+
+  /**
+   * 删除菜单选项
+   * @param optionId
+   */
+  deleteOption(optionId) {
+    return this.post('/product/deleteOption', {
+      id: optionId
+    }).map(res => res.data);
+  }
+
 }

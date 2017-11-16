@@ -7,7 +7,7 @@
 <div>
   <nz-table #nzTable [nzAjaxData]="products" [nzPageSize]="15"
             nzSize="small" [nzShowTotal]="true" [nzTotal]="total"
-            [(nzPageIndex)]="page" (nzPageIndexChange)="listProduct()"
+            [(nzPageIndex)]="page" (nzPageIndexChange)="listProduct('refresh')"
             [nzLoading]="tableLoading">
     <thead nz-thead>
     <tr>
@@ -18,21 +18,18 @@
         <nz-dropdown>
           <i class="anticon anticon-filter" nz-dropdown></i>
           <ul nz-menu>
-            <nz-radio-group [(ngModel)]="condition.category">
-              <li nz-menu-item *ngFor="let option of categoryOptions">
-                <label nz-radio [nzValue]="option">
-                  <span>{{option}}</span>
-                </label>
-              </li>
-            </nz-radio-group>
+            <li nz-menu-item *ngFor="let option of categoryOptions"
+                (click)="condition.category = option;listProduct('reload')">
+              <span>{{option}}</span>
+            </li>
           </ul>
           <div nz-table-filter>
-            <span nz-table-filter-confirm (click)="listProduct(true)">OK</span>
-            <span nz-table-filter-clear (click)="condition.category = '';listProduct(true)">Reset</span>
+            <span nz-table-filter-clear (click)="condition.category = '';listProduct('reload')">重置</span>
           </div>
         </nz-dropdown>
       </th>
       <th nz-th><span>价格</span></th>
+      <th nz-th><span>选项</span></th>
       <th nz-th><span>操作</span></th>
     </tr>
     </thead>
@@ -43,6 +40,22 @@
       <td nz-td>{{data.name}}</td>
       <td nz-td>{{data.category}}</td>
       <td nz-td>{{data.price}}</td>
+      <td nz-td>
+        <nz-tag *ngFor="let option of data.product_options" [nzClosable]="true" (nzClose)="deleteOptions(option)">
+          {{option.option_name}}
+        </nz-tag>
+        <button nz-button *ngIf="!inputVisible[i]"
+                [nzSize]="'small'" [nzType]="'dashed'"
+                (click)="showInput(i)">新选项
+        </button>
+        <input nz-input nzSize="small" #option_input
+               [style.display]="inputVisible[i] ? 'inline' : 'none'"
+               type="text"
+               [(ngModel)]="optionValue[i]"
+               style="width: 50px;"
+               (blur)="handleInputConfirm(data, i)" (keydown.enter)="handleInputConfirm(data, i)">
+
+      </td>
       <td nz-td>
         <a (click)="openDialog(data)">编辑</a>
         <span nz-table-divider></span>
