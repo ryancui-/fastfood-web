@@ -9,6 +9,7 @@
   }
 }
 
+// 订单团
 .group-item {
   display: flex;
   flex-direction: row;
@@ -38,4 +39,28 @@
 
 .item-hover:hover {
   cursor: pointer;
+}
+
+// 订单
+.order-item {
+  padding-left: 10px;
+  margin: 10px 0;
+}
+
+.order-item-user-line {
+  display: flex;
+  align-items: center;
+}
+
+.order-item-line {
+  display: flex;
+  align-items: center;
+  margin: 10px 0;
+}
+
+.price {
+  width: 70px;
+  color: red;
+  font-size: 16px;
+  text-align: right;
 }

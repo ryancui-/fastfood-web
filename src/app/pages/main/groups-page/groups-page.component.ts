@@ -3,6 +3,10 @@ import {ProductService} from '../product.service';
 import {GroupService} from '../group.service';
 import {FormBuilder, FormGroup, Validators} from '@angular/forms';
 import Utils from '../../../utils';
+import {NzNotificationService} from 'ng-zorro-antd';
+import {OrderService} from '../order.service';
+
+import 'rxjs/add/operator/do';
 
 @Component({
   selector: 'app-groups-page',
@@ -40,7 +44,9 @@ export class GroupsPageComponent implements OnInit {
   orders;
 
   constructor(private productService: ProductService,
+              private orderService: OrderService,
               private formBuilder: FormBuilder,
+              private nzNotificationService: NzNotificationService,
               private groupService: GroupService) {
   }
 
@@ -52,7 +58,7 @@ export class GroupsPageComponent implements OnInit {
 
     this.listTodayProduct('reload');
 
-    this.listGroups();
+    this.listGroups().subscribe();
   }
 
   // 列出当天菜式
@@ -84,7 +90,7 @@ export class GroupsPageComponent implements OnInit {
   // 列出所有团组
   listGroups() {
     this.groupLoading = true;
-    this.groupService.listAllGroup().subscribe(data => {
+    return this.groupService.listAllGroup().do(data => {
       this.groupLoading = false;
       this.clearDueTimers();
       this.groups = data;
@@ -141,7 +147,8 @@ export class GroupsPageComponent implements OnInit {
   selectGroup(groupId) {
     if (this.sideBlockStatus === 1) {
       this.groupId = groupId;
-      this.orders = this.groups.find(group => group.id === groupId).orders;
+      this.orders = this.initOrders(this.groups.find(group => group.id === groupId).orders);
+      console.log(this.orders);
       this.sideBlockStatus = 3;
     }
   }
@@ -175,8 +182,61 @@ export class GroupsPageComponent implements OnInit {
     const params = this.groupAddForm.value;
     params.dueTime = Utils.formatDateTime(params.dueTime);
     this.groupService.addGroup(params).subscribe(data => {
-      this.listGroups();
-      this.sideBlockStatus = 1;
+      this.listGroups().subscribe(() => {
+        this.sideBlockStatus = 1;
+      });
     });
+  }
+
+  // 添加订单
+  addOrder(product) {
+    if (!this.groupId) {
+      this.nzNotificationService.warning('提示', '先选一个团才能继续点');
+      return;
+    }
+
+    const params = {
+      groupId: this.groupId,
+      productId: product.id,
+      quantity: 1
+    };
+
+    this.orderService.addOrderToGroup(params).subscribe(data => {
+      console.log(data);
+
+      this.listGroups().subscribe(() => {
+        this.orders = this.initOrders(this.groups.find(group => group.id === this.groupId).orders);
+      });
+    });
+  }
+
+  // 删除订单
+  removeOrder(orderId) {
+    console.log(orderId);
+  }
+
+  // 转换订单表，按 user 归类
+  initOrders(orders) {
+    const result = [];
+    orders.forEach(order => {
+      let obj = result.find(r => r.user.id === order.user_id);
+      if (!obj) {
+        obj = {
+          user: order.user,
+          rows: []
+        };
+        result.push(obj);
+      }
+
+      obj.rows.push(order);
+    });
+
+    // 计算每个人的总价
+    for (let i = 0; i < result.length; i++) {
+      const rows = result[i].rows;
+      result[i].totalPrice = rows.map(r => r.total_price).reduce((p, c) => p + c, 0);
+    }
+
+    return result;
   }
 }

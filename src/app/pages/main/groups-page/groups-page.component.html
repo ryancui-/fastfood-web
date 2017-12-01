@@ -50,8 +50,23 @@
       </ng-template>
     </div>
 
-    <div>
-
+    <div *ngIf="sideBlockStatus === 3">
+      <ng-template ngFor let-order [ngForOf]="orders">
+        <div class="order-item">
+          <div class="order-item-user-line">
+            <nz-avatar nzSize="small" nzIcon="user" [nzSrc]="order.user?.avatar_url || ''"></nz-avatar>
+            <span style="margin-left: 10px;flex: 1;">{{order.user.username || order.user.nickname}}</span>
+            <span class="price">￥{{order.totalPrice}}</span>
+          </div>
+          <div class="order-item-line" *ngFor="let row of order.rows">
+            <a (click)="removeOrder(row.id)">
+              <i class="anticon anticon-close"></i>
+            </a>
+            <span style="margin-left: 10px;flex: 1;">{{row.product_name}}</span>
+            <span style="width: 60px;text-align: right;">{{row.quantity}}</span>
+          </div>
+        </div>
+      </ng-template>
     </div>
   </div>
 
@@ -92,7 +107,7 @@
         <td nz-td nzWidth="20%">{{data.category}}</td>
         <td nz-td nzWidth="20%">{{data.price}}</td>
         <td nz-td nzWidth="20%">
-          <a>点餐</a>
+          <a (click)="addOrder(data)">点餐</a>
         </td>
       </tr>
       </tbody>
