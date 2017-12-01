@@ -1,24 +1,46 @@
 <div class="main">
   <div class="side-block">
     <div style="margin-bottom: 10px;">
-      <button nz-button [nzType]="'primary'">
-        <span>我要建团</span>
+      <button *ngIf="sideBlockStatus === 1" nz-button [nzType]="'primary'" (click)="openAddGroup()">建团</button>
+      <button *ngIf="sideBlockStatus === 2" nz-button [nzType]="'primary'" (click)="cancelAddGroup()">取消</button>
+
+      <button *ngIf="sideBlockStatus === 2" nz-button [nzType]="'primary'"
+              style="float: right;" (click)="addGroup()">保存
       </button>
     </div>
 
-    <div class="group-item" *ngFor="let group of groups" (click)="selectGroup(group.id)">
-      <div class="group-item-info">
-        <div class="group-item-info-line">
-          <nz-avatar nzSize="small" nzIcon="user" [nzSrc]="group.composer_img || ''"></nz-avatar>
-          <span style="margin-left: 10px;">{{group.name}}</span>
+    <div *ngIf="sideBlockStatus === 2">
+      <form nz-form [formGroup]="groupAddForm" (ngSubmit)="addGroup()">
+        <div nz-form-item>
+          <div nz-form-control [nzValidateStatus]="groupAddForm.get('groupName')">
+            <nz-input formControlName="groupName" [nzPlaceHolder]="'团组名称'" [nzSize]="'large'">
+            </nz-input>
+          </div>
         </div>
-        <div class="group-item-info-line">
-          <nz-tag [nzColor]="'orange'">征集中</nz-tag>
-          <span>还剩 {{group.remainTime}}</span>
+        <div nz-form-item>
+          <div nz-form-control [nzValidateStatus]="groupAddForm.get('dueTime')">
+            <nz-datepicker style="width: 100%;" [nzSize]="'large'" formControlName="dueTime" [nzShowTime]="true"
+                           [nzPlaceHolder]="'选择截止日期'" [nzFormat]="'YYYY-MM-DD HH:mm:ss'"></nz-datepicker>
+          </div>
         </div>
-      </div>
-      <div class="group-item-arrow">
-        <i class="anticon anticon-right"></i>
+      </form>
+    </div>
+
+    <div *ngIf="sideBlockStatus === 1">
+      <div class="group-item" *ngFor="let group of groups" (click)="selectGroup(group.id)">
+        <div class="group-item-info">
+          <div class="group-item-info-line">
+            <nz-avatar nzSize="small" nzIcon="user" [nzSrc]="group.composer_img || ''"></nz-avatar>
+            <span style="margin-left: 10px;">{{group.name}}</span>
+          </div>
+          <div class="group-item-info-line">
+            <nz-tag [nzColor]="'orange'">征集中</nz-tag>
+            <span>{{formatRemainTime(group.remainTime)}}</span>
+          </div>
+        </div>
+        <div class="group-item-arrow">
+          <i class="anticon anticon-right"></i>
+        </div>
       </div>
     </div>
   </div>

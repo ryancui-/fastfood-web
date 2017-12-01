@@ -1,6 +1,8 @@
 import {Component, OnInit} from '@angular/core';
 import {ProductService} from '../product.service';
 import {GroupService} from '../group.service';
+import {FormBuilder, FormGroup, Validators} from '@angular/forms';
+import Utils from '../../../utils';
 
 @Component({
   selector: 'app-groups-page',
@@ -8,6 +10,12 @@ import {GroupService} from '../group.service';
   styleUrls: ['./groups-page.component.scss']
 })
 export class GroupsPageComponent implements OnInit {
+
+  // 侧边栏状态
+  // 1 - 显示订单团列表
+  // 2 - 添加团
+  // 3 - 显示订单团详情
+  sideBlockStatus = 1;
 
   // 菜单表格
   products = [];
@@ -21,18 +29,29 @@ export class GroupsPageComponent implements OnInit {
 
   // 订单团
   groups;
+  dueTimers;
   groupLoading = false;
 
+  // 创建订单团
+  groupAddForm: FormGroup;
+
   constructor(private productService: ProductService,
+              private formBuilder: FormBuilder,
               private groupService: GroupService) {
   }
 
   ngOnInit() {
+    this.groupAddForm = this.formBuilder.group({
+      dueTime: [null, Validators.required],
+      groupName: ['', Validators.required]
+    });
+
     this.listTodayProduct('reload');
 
     this.listGroups();
   }
 
+  // 列出当天菜式
   listTodayProduct(operation) {
     switch (operation) {
       case 'refresh':
@@ -58,16 +77,92 @@ export class GroupsPageComponent implements OnInit {
     });
   }
 
+  // 列出所有团组
   listGroups() {
     this.groupLoading = true;
     this.groupService.listAllGroup().subscribe(data => {
       this.groupLoading = false;
+      this.clearDueTimers();
       this.groups = data;
+      this.initDueTimers();
     });
+  }
+
+  // 清空 timer
+  clearDueTimers() {
+    if (this.dueTimers && this.dueTimers.length) {
+      this.dueTimers.forEach(timer => {
+        clearInterval(timer);
+      });
+    }
+  }
+
+  // 重新初始化 timer
+  initDueTimers() {
+    this.dueTimers = [];
+    this.groups.forEach(group => {
+      const timer = setInterval(() => {
+        const dueTime = new Date(group.due_time).getTime();
+        const now = new Date().getTime();
+        group.remainTime = dueTime - now;
+      }, 1000);
+      this.dueTimers.push(timer);
+    });
+  }
+
+  // 格式化剩余时间
+  formatRemainTime(remain) {
+    if (remain === undefined) {
+      return '还在算呢傻孩子';
+    } else if (remain < 0) {
+      return '已经截止啦';
+    } else {
+      const seconds = Math.floor(remain / 1000);
+      if (seconds < 60) {
+        return '还剩 ' + seconds + ' 秒';
+      }
+      const minutes = Math.floor(seconds / 60);
+      if (minutes < 60) {
+        return '还剩 ' + minutes + ' 分钟 ' + (seconds - minutes * 60) + ' 秒';
+      }
+      const hours = Math.floor(minutes / 60);
+      if (hours < 24) {
+        return '还剩 ' + hours + ' 小时 ' + minutes % 60 + ' 分钟 ' + (seconds - hours * 3600 - minutes % 60 * 60) + ' 秒';
+      }
+      return '还有很久不要慌';
+    }
   }
 
   // 选择某个订单团
   selectGroup(groupId) {
     console.log(groupId);
+  }
+
+  // 跳转到创建订单团状态
+  openAddGroup() {
+    const today = new Date();
+    this.groupAddForm.patchValue({
+      dueTime: today,
+      groupName: today.getDate() + ' 新团'
+    });
+
+    this.sideBlockStatus = 2;
+  }
+
+  // 取消创建订单团
+  cancelAddGroup() {
+    this.groupAddForm.reset();
+    this.sideBlockStatus = 1;
+  }
+
+  // 创建订单团
+  addGroup() {
+    console.log(this.groupAddForm.value);
+    const params = this.groupAddForm.value;
+    params.dueTime = Utils.formatDateTime(params.dueTime);
+    this.groupService.addGroup(params).subscribe(data => {
+      this.listGroups();
+      this.sideBlockStatus = 1;
+    });
   }
 }
