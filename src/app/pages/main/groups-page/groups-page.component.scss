@@ -9,6 +9,13 @@
   }
 }
 
+.price {
+  width: 70px;
+  color: red;
+  font-size: 16px;
+  text-align: right;
+}
+
 // 订单团
 .group-item {
   display: flex;
@@ -19,7 +26,8 @@
   margin-bottom: 10px;
 
   .group-item-info {
-
+    flex: 1;
+    padding-right: 10px;
   }
 
   .group-item-info-line {
@@ -41,26 +49,44 @@
   cursor: pointer;
 }
 
+.item-selected {
+  background-color: #e8fff8;
+}
+
 // 订单
 .order-item {
   padding-left: 10px;
+  padding-right: 10px;
   margin: 10px 0;
 }
 
 .order-item-user-line {
   display: flex;
   align-items: center;
+
+  .order-username {
+    margin-left: 10px;
+    flex: 1;
+  }
 }
 
 .order-item-line {
   display: flex;
   align-items: center;
   margin: 10px 0;
+
+  .order-remove {
+    width: 23px;
+    text-align: center;
+  }
+  .order-name {
+    margin-left: 10px;
+    flex: 1;
+  }
+  .order-quantity {
+    width: 60px;
+    text-align: right;
+  }
 }
 
-.price {
-  width: 70px;
-  color: red;
-  font-size: 16px;
-  text-align: right;
-}
+

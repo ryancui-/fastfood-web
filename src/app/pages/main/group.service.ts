@@ -31,4 +31,16 @@ export class GroupService extends BaseService {
   getGroupDetail(groupId) {
     return this.get('/group/get?id=' + groupId).map(res => res.data);
   }
+
+  /**
+   * 改变订单团状态
+   * @param groupId
+   * @param status
+   * @returns {OperatorFunction<T, R>}
+   */
+  changeStatus(groupId, status) {
+    return this.post('/group/status', {
+      id: groupId, status
+    }).map(res => res.data);
+  }
 }

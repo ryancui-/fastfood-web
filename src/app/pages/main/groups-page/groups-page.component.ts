@@ -3,10 +3,11 @@ import {ProductService} from '../product.service';
 import {GroupService} from '../group.service';
 import {FormBuilder, FormGroup, Validators} from '@angular/forms';
 import Utils from '../../../utils';
-import {NzNotificationService} from 'ng-zorro-antd';
+import {NzMessageService, NzNotificationService} from 'ng-zorro-antd';
 import {OrderService} from '../order.service';
 
 import 'rxjs/add/operator/do';
+import {Store} from '../../../store';
 
 @Component({
   selector: 'app-groups-page',
@@ -47,7 +48,9 @@ export class GroupsPageComponent implements OnInit {
               private orderService: OrderService,
               private formBuilder: FormBuilder,
               private nzNotificationService: NzNotificationService,
-              private groupService: GroupService) {
+              private msgService: NzMessageService,
+              private groupService: GroupService,
+              public store: Store) {
   }
 
   ngOnInit() {
@@ -94,6 +97,13 @@ export class GroupsPageComponent implements OnInit {
       this.groupLoading = false;
       this.clearDueTimers();
       this.groups = data;
+
+      for (let i = 0; i < this.groups.length; i++) {
+        const orders = this.groups[i].orders;
+        this.groups[i].totalPrice =
+          orders.map(o => o.total_price).reduce((p, c) => p + c, 0);
+      }
+
       this.initDueTimers();
     });
   }
@@ -145,7 +155,7 @@ export class GroupsPageComponent implements OnInit {
 
   // 选择某个订单团
   selectGroup(groupId) {
-    if (this.sideBlockStatus === 1) {
+    if (this.sideBlockStatus !== 3) {
       this.groupId = groupId;
       this.orders = this.initOrders(this.groups.find(group => group.id === groupId).orders);
       console.log(this.orders);
@@ -183,6 +193,28 @@ export class GroupsPageComponent implements OnInit {
     params.dueTime = Utils.formatDateTime(params.dueTime);
     this.groupService.addGroup(params).subscribe(data => {
       this.listGroups().subscribe(() => {
+        this.selectGroup(data);
+      });
+    });
+  }
+
+  // 当前用户是否是已选择订单团的发起人
+  isGroupOnwer() {
+    return this.groups.find(g => g.id === this.groupId).composer_user_id === this.store.user.id;
+  }
+
+  // 已选择订单团是否已过期
+  isGroupExpired() {
+    return new Date().getTime() -
+      new Date(this.groups.find(g => g.id === this.groupId).due_time).getTime() > 0;
+  }
+
+  // 改变团组状态
+  changeGroupStatus(status) {
+    this.groupService.changeStatus(this.groupId, status ? 3 : 2).subscribe(() => {
+      this.msgService.success('修改成功');
+      this.listGroups().subscribe(() => {
+        this.groupId = null;
         this.sideBlockStatus = 1;
       });
     });
@@ -190,20 +222,13 @@ export class GroupsPageComponent implements OnInit {
 
   // 添加订单
   addOrder(product) {
-    if (!this.groupId) {
-      this.nzNotificationService.warning('提示', '先选一个团才能继续点');
-      return;
-    }
-
     const params = {
       groupId: this.groupId,
       productId: product.id,
       quantity: 1
     };
 
-    this.orderService.addOrderToGroup(params).subscribe(data => {
-      console.log(data);
-
+    this.orderService.addOrderToGroup(params).subscribe(() => {
       this.listGroups().subscribe(() => {
         this.orders = this.initOrders(this.groups.find(group => group.id === this.groupId).orders);
       });
@@ -212,7 +237,12 @@ export class GroupsPageComponent implements OnInit {
 
   // 删除订单
   removeOrder(orderId) {
-    console.log(orderId);
+    this.orderService.deleteOrder(orderId).subscribe(() => {
+      this.msgService.success('删除成功');
+      this.listGroups().subscribe(() => {
+        this.orders = this.initOrders(this.groups.find(group => group.id === this.groupId).orders);
+      });
+    });
   }
 
   // 转换订单表，按 user 归类
