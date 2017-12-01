@@ -14,8 +14,16 @@ export class ProductService extends BaseService {
    * @param condition
    * @returns {Observable<Object>}
    */
-  list(condition) {
-    return this.post('/product/listAll', condition).map(res => res.data);
+  list(conditions) {
+    return this.post('/product/listAll', conditions).map(res => res.data);
+  }
+
+  /**
+   * 根据条件获取每天的菜单列表
+   * @param confitions
+   */
+  listPerday(conditions) {
+    return this.post('/product/list', conditions).map(res => res.data);
   }
 
   /**
