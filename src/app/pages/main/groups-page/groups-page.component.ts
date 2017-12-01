@@ -35,6 +35,10 @@ export class GroupsPageComponent implements OnInit {
   // 创建订单团
   groupAddForm: FormGroup;
 
+  // 选择订单团
+  groupId;
+  orders;
+
   constructor(private productService: ProductService,
               private formBuilder: FormBuilder,
               private groupService: GroupService) {
@@ -135,7 +139,11 @@ export class GroupsPageComponent implements OnInit {
 
   // 选择某个订单团
   selectGroup(groupId) {
-    console.log(groupId);
+    if (this.sideBlockStatus === 1) {
+      this.groupId = groupId;
+      this.orders = this.groups.find(group => group.id === groupId).orders;
+      this.sideBlockStatus = 3;
+    }
   }
 
   // 跳转到创建订单团状态
@@ -152,6 +160,12 @@ export class GroupsPageComponent implements OnInit {
   // 取消创建订单团
   cancelAddGroup() {
     this.groupAddForm.reset();
+    this.sideBlockStatus = 1;
+  }
+
+  // 退出特定订单团
+  exitGroup() {
+    this.groupId = null;
     this.sideBlockStatus = 1;
   }
 
