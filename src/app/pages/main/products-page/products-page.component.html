@@ -47,7 +47,7 @@
         <span>状态</span>
         <nz-dropdown>
           <i class="anticon anticon-filter" nz-dropdown
-             [style.color]="condition.category ? 'red' : ''"></i>
+             [style.color]="condition.valid !== null ? 'red' : ''"></i>
           <ul nz-menu>
             <li nz-menu-item (click)="condition.valid = 1;listProduct('reload')">
               <span>在售</span>

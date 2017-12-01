@@ -53,7 +53,8 @@ export class ProductsPageComponent implements OnInit, OnDestroy {
 
   ngOnInit() {
     this.condition = {
-      category: ''
+      category: '',
+      valid: null
     };
 
     this.productForm = this.formBuilder.group({
