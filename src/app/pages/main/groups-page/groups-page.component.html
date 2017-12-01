@@ -1,8 +1,29 @@
-<div nz-row [nzGutter]="8">
-  <div nz-col [nzSpan]="8">
+<div class="main">
+  <div class="side-block">
+    <div style="margin-bottom: 10px;">
+      <button nz-button [nzType]="'primary'">
+        <span>我要建团</span>
+      </button>
+    </div>
 
+    <div class="group-item" *ngFor="let group of groups" (click)="selectGroup(group.id)">
+      <div class="group-item-info">
+        <div class="group-item-info-line">
+          <nz-avatar nzSize="small" nzIcon="user" [nzSrc]="group.composer_img || ''"></nz-avatar>
+          <span style="margin-left: 10px;">{{group.name}}</span>
+        </div>
+        <div class="group-item-info-line">
+          <nz-tag [nzColor]="'orange'">征集中</nz-tag>
+          <span>还剩 {{group.remainTime}}</span>
+        </div>
+      </div>
+      <div class="group-item-arrow">
+        <i class="anticon anticon-right"></i>
+      </div>
+    </div>
   </div>
-  <div nz-col [nzSpan]="16">
+
+  <div class="product-block">
     <nz-table #nzTable [nzAjaxData]="products" [nzPageSize]="15"
               nzSize="small" [nzShowTotal]="true" [nzTotal]="total"
               [(nzPageIndex)]="page" (nzPageIndexChange)="listTodayProduct('refresh')"

@@ -1,5 +1,6 @@
 import {Component, OnInit} from '@angular/core';
 import {ProductService} from '../product.service';
+import {GroupService} from '../group.service';
 
 @Component({
   selector: 'app-groups-page',
@@ -8,6 +9,7 @@ import {ProductService} from '../product.service';
 })
 export class GroupsPageComponent implements OnInit {
 
+  // 菜单表格
   products = [];
   total = 0;
   page = 1;
@@ -17,11 +19,18 @@ export class GroupsPageComponent implements OnInit {
     '每旬菜式', '明炉烧味', '天天靓汤'
   ];
 
-  constructor(private productService: ProductService) {
+  // 订单团
+  groups;
+  groupLoading = false;
+
+  constructor(private productService: ProductService,
+              private groupService: GroupService) {
   }
 
   ngOnInit() {
     this.listTodayProduct('reload');
+
+    this.listGroups();
   }
 
   listTodayProduct(operation) {
@@ -47,5 +56,18 @@ export class GroupsPageComponent implements OnInit {
       this.total = data.total;
       this.products = data.rows;
     });
+  }
+
+  listGroups() {
+    this.groupLoading = true;
+    this.groupService.listAllGroup().subscribe(data => {
+      this.groupLoading = false;
+      this.groups = data;
+    });
+  }
+
+  // 选择某个订单团
+  selectGroup(groupId) {
+    console.log(groupId);
   }
 }

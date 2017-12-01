@@ -8,6 +8,8 @@ import {NgZorroAntdModule} from 'ng-zorro-antd';
 import {MainPageComponent} from './main-page/main-page.component';
 import {FormsModule, ReactiveFormsModule} from '@angular/forms';
 import {ProductService} from './product.service';
+import {GroupService} from './group.service';
+import {OrderService} from './order.service';
 
 @NgModule({
   imports: [
@@ -18,7 +20,7 @@ import {ProductService} from './product.service';
     NgZorroAntdModule
   ],
   providers: [
-    ProductService
+    ProductService, GroupService, OrderService
   ],
   declarations: [GroupsPageComponent, ProductsPageComponent, MainPageComponent]
 })

@@ -1,0 +1,40 @@
+.main {
+  display: flex;
+  .side-block {
+    width: 280px;
+  }
+  .product-block {
+    margin-left: 20px;
+    flex: 1;
+  }
+}
+
+.group-item {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  box-shadow: 2px 2px 5px #e1e1e1;
+  padding-left: 10px;
+
+  .group-item-info {
+
+  }
+
+  .group-item-info-line {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    margin: 15px 0;
+  }
+
+  .group-item-arrow {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 50px;
+  }
+}
+
+.group-item:hover {
+  cursor: pointer;
+}
