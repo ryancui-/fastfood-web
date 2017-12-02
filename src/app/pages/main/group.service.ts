@@ -12,8 +12,8 @@ export class GroupService extends BaseService {
   /**
    * 获取所有订单团列表
    */
-  listAllGroup() {
-    return this.get('/group/list').map(res => res.data);
+  listAllGroup(type) {
+    return this.get('/group/list?type=' + type).map(res => res.data);
   }
 
   /**

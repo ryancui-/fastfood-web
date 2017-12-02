@@ -16,6 +16,18 @@
           <i class="anticon anticon-close"></i>
         </button>
       </nz-button-group>
+      <div *ngIf="sideBlockStatus === 1" style="float: right;">
+        <nz-checkable-tag [nzChecked]="groupType === 1" (nzChange)="switchGroups($event, 1)">
+          征集中
+        </nz-checkable-tag>
+        <nz-checkable-tag [nzChecked]="groupType === 2" (nzChange)="switchGroups($event, 2)">
+          我发起的
+        </nz-checkable-tag>
+        <nz-checkable-tag [nzChecked]="groupType === 3" (nzChange)="switchGroups($event, 3)">
+          我参与的
+        </nz-checkable-tag>
+      </div>
+
     </div>
 
     <div *ngIf="sideBlockStatus === 2">
@@ -49,7 +61,9 @@
               <span class="price">￥{{group.totalPrice}}</span>
             </div>
             <div class="group-item-info-line">
-              <nz-tag [nzColor]="'orange'">征集中</nz-tag>
+              <nz-tag [nzColor]="'green'" *ngIf="group.status === 1">征集中</nz-tag>
+              <nz-tag [nzColor]="'red'" *ngIf="group.status === 3">已取消</nz-tag>
+              <nz-tag [nzColor]="'blue'" *ngIf="group.status === 2">已完成</nz-tag>
               <span>{{formatRemainTime(group.remainTime)}}</span>
             </div>
           </div>

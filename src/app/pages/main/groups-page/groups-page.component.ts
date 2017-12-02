@@ -37,6 +37,7 @@ export class GroupsPageComponent implements OnInit {
   groups;
   dueTimers;
   groupLoading = false;
+  groupType = 1;
 
   // 创建订单团
   groupAddForm: FormGroup;
@@ -106,7 +107,7 @@ export class GroupsPageComponent implements OnInit {
   // 列出所有团组
   listGroups() {
     this.groupLoading = true;
-    return this.groupService.listAllGroup().do(data => {
+    return this.groupService.listAllGroup(this.groupType).do(data => {
       this.groupLoading = false;
       this.clearDueTimers();
       this.groups = data;
@@ -119,6 +120,14 @@ export class GroupsPageComponent implements OnInit {
 
       this.initDueTimers();
     });
+  }
+
+  // 切换订单团类型
+  switchGroups(checked, type) {
+    if (checked) {
+      this.groupType = type;
+      this.listGroups().subscribe();
+    }
   }
 
   // 清空 timer
