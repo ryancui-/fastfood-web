@@ -1,14 +1,15 @@
 <div class="main">
   <div class="side-block">
-    <div style="margin-bottom: 10px;">
+    <div style="display: flex;justify-content: space-between; align-items: center;margin-bottom: 10px;">
       <button *ngIf="sideBlockStatus === 1" nz-button [nzType]="'primary'" (click)="openAddGroup()">建团</button>
       <button *ngIf="sideBlockStatus === 2" nz-button [nzType]="'primary'" (click)="cancelAddGroup()">取消</button>
       <button *ngIf="sideBlockStatus === 3" nz-button [nzType]="'primary'" (click)="exitGroup()">返回</button>
 
       <button *ngIf="sideBlockStatus === 2" nz-button [nzType]="'primary'"
-              style="float: right;" (click)="addGroup()">保存
+              (click)="addGroup()">保存
       </button>
-      <nz-button-group *ngIf="sideBlockStatus === 3 && isGroupOnwer()" style="float: right;">
+
+      <nz-button-group *ngIf="sideBlockStatus === 3 && isGroupOnwer() && isGroupActive()">
         <button nz-button [nzType]="'primary'" (click)="changeGroupStatus(false)">
           <i class="anticon anticon-check"></i>
         </button>
@@ -16,6 +17,7 @@
           <i class="anticon anticon-close"></i>
         </button>
       </nz-button-group>
+
       <div *ngIf="sideBlockStatus === 1" style="float: right;">
         <nz-checkable-tag [nzChecked]="groupType === 1" (nzChange)="switchGroups($event, 1)">
           征集中
@@ -27,7 +29,6 @@
           我参与的
         </nz-checkable-tag>
       </div>
-
     </div>
 
     <div *ngIf="sideBlockStatus === 2">

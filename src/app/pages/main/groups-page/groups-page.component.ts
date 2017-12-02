@@ -231,6 +231,10 @@ export class GroupsPageComponent implements OnInit {
       new Date(this.groups.find(g => g.id === this.groupId).due_time).getTime() > 0;
   }
 
+  isGroupActive() {
+    return this.groups.find(g => g.id === this.groupId).status === 1;
+  }
+
   // 改变团组状态
   changeGroupStatus(status) {
     this.groupService.changeStatus(this.groupId, status ? 3 : 2).subscribe(() => {
