@@ -68,15 +68,20 @@
             <span class="order-username">{{order.user.username || order.user.nickname}}</span>
             <span class="price">￥{{order.totalPrice}}</span>
           </div>
-          <div class="order-item-line" *ngFor="let row of order.rows">
-            <div class="order-remove">
-              <a *ngIf="order.user.id === store.user.id" (click)="removeOrder(row.id)">
-                <i class="anticon anticon-close"></i>
-              </a>
+          <ng-template ngFor let-row [ngForOf]="order.rows">
+            <div class="order-item-line">
+              <div class="order-remove">
+                <a *ngIf="order.user.id === store.user.id" (click)="removeOrder(row.id)">
+                  <i class="anticon anticon-close"></i>
+                </a>
+              </div>
+              <span class="order-name">{{row.product_name}}</span>
+              <span class="order-quantity">{{row.quantity}}</span>
             </div>
-            <span class="order-name">{{row.product_name}}</span>
-            <span class="order-quantity">{{row.quantity}}</span>
-          </div>
+            <div *ngIf="row.remark" class="order-remark">
+              <span>{{row.remark}}</span>
+            </div>
+          </ng-template>
         </div>
       </ng-template>
     </div>

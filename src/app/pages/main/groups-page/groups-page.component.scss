@@ -73,7 +73,7 @@
 .order-item-line {
   display: flex;
   align-items: center;
-  margin: 10px 0;
+  margin-top: 10px;
 
   .order-remove {
     width: 23px;
@@ -86,6 +86,16 @@
   .order-quantity {
     width: 60px;
     text-align: right;
+  }
+}
+
+.order-remark {
+  margin-left: 33px;
+  margin-top: 5px;
+  font-size: 10px;
+  span {
+    padding: 2px 15px;
+    background-color: #f1f1f1;
   }
 }
 
