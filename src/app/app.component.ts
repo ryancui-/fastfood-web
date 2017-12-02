@@ -14,7 +14,7 @@ export class AppComponent {
     this.router.events.filter(e => {
       return e instanceof NavigationEnd;
     }).subscribe((e: NavigationEnd) => {
-      this.store.url = e.url;
+      this.store.url = e.urlAfterRedirects;
     });
   }
 }
