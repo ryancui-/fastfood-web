@@ -1,9 +1,9 @@
-import {Component, OnInit} from '@angular/core';
+import {Component, OnInit, ViewChild} from '@angular/core';
 import {ProductService} from '../product.service';
 import {GroupService} from '../group.service';
 import {FormBuilder, FormGroup, Validators} from '@angular/forms';
 import Utils from '../../../utils';
-import {NzMessageService, NzNotificationService} from 'ng-zorro-antd';
+import {NzMessageService, NzModalService, NzNotificationService} from 'ng-zorro-antd';
 import {OrderService} from '../order.service';
 
 import 'rxjs/add/operator/do';
@@ -31,6 +31,7 @@ export class GroupsPageComponent implements OnInit {
   categoryOptions = [
     '每旬菜式', '明炉烧味', '天天靓汤'
   ];
+  selectedProduct;
 
   // 订单团
   groups;
@@ -44,11 +45,18 @@ export class GroupsPageComponent implements OnInit {
   groupId;
   orders;
 
+  @ViewChild('order_dialog') orderDialog;
+  orderDialogInst;
+
+  // 添加订单对话框
+  orderAddForm;
+
   constructor(private productService: ProductService,
               private orderService: OrderService,
               private formBuilder: FormBuilder,
               private nzNotificationService: NzNotificationService,
               private msgService: NzMessageService,
+              private modalService: NzModalService,
               private groupService: GroupService,
               public store: Store) {
   }
@@ -57,6 +65,11 @@ export class GroupsPageComponent implements OnInit {
     this.groupAddForm = this.formBuilder.group({
       dueTime: [null, Validators.required],
       groupName: ['', Validators.required]
+    });
+
+    this.orderAddForm = this.formBuilder.group({
+      quantity: [null, Validators.required],
+      remark: ''
     });
 
     this.listTodayProduct('reload');
@@ -220,12 +233,30 @@ export class GroupsPageComponent implements OnInit {
     });
   }
 
+  // 打开订单确认
+  openOrderConfirm(product) {
+    this.selectedProduct = product;
+    this.orderAddForm.patchValue({
+      quantity: 1,
+      remark: ''
+    });
+    this.orderDialogInst = this.modalService.open({
+      title: '确认点餐',
+      content: this.orderDialog,
+      width: 400,
+      onOk: () => {
+        this.addOrder();
+      }
+    });
+  }
+
   // 添加订单
-  addOrder(product) {
+  addOrder() {
     const params = {
       groupId: this.groupId,
-      productId: product.id,
-      quantity: 1
+      productId: this.selectedProduct.id,
+      quantity: this.orderAddForm.get('quantity').value,
+      remark: this.orderAddForm.get('remark').value
     };
 
     this.orderService.addOrderToGroup(params).subscribe(() => {

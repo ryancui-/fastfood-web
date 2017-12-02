@@ -119,10 +119,33 @@
         <td nz-td nzWidth="20%">{{data.category}}</td>
         <td nz-td nzWidth="20%">{{data.price}}</td>
         <td nz-td nzWidth="20%" *ngIf="groupId && (isGroupOnwer() || !isGroupExpired())">
-          <a (click)="addOrder(data)">点餐</a>
+          <a (click)="openOrderConfirm(data)">点餐</a>
         </td>
       </tr>
       </tbody>
     </nz-table>
   </div>
 </div>
+
+<ng-template #order_dialog>
+  <form nz-form [formGroup]="orderAddForm" (submit)="addOrder()">
+    <div nz-row style="margin-bottom: 10px;">
+      <div nz-col [nzSpan]="12">
+        <label>你选择了</label>
+        <span style="color: blue;font-size: 16px;margin-left: 5px;">{{selectedProduct.name}}</span>
+      </div>
+      <div nz-col [nzSpan]="12" style="text-align: right;">
+        <span>数量：</span>
+        <nz-input-number [nzMin]="1" formControlName="quantity"></nz-input-number>
+      </div>
+    </div>
+    <div *ngIf="selectedProduct.product_options.length > 0" nz-row>
+      <label>可选项：</label>
+      <nz-radio-group formControlName="remark">
+        <label *ngFor="let option of selectedProduct.product_options" nz-radio [nzValue]="option.option_name">
+          <span>{{option.option_name}}</span>
+        </label>
+      </nz-radio-group>
+    </div>
+  </form>
+</ng-template>
