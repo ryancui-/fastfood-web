@@ -107,47 +107,61 @@
   </div>
 
   <div class="product-block">
-    <nz-table #nzTable [nzDataSource]="products" [nzIsPagination]="false"
-              nzSize="small" [nzShowTotal]="true"
-              [nzLoading]="tableLoading">
-      <thead nz-thead>
-      <tr>
-        <th nz-th nzWidth="10%">#</th>
-        <th nz-th nzWidth="30%"><span>菜单名</span></th>
-        <th nz-th nzWidth="20%">
-          <span>类别</span>
-          <nz-dropdown>
-            <i class="anticon anticon-filter" nz-dropdown
-               [style.color]="condition.category ? 'red' : ''"></i>
-            <ul nz-menu>
-              <li nz-menu-item *ngFor="let option of categoryOptions"
-                  (click)="condition.category = option;listTodayProduct('reload')">
-                <span>{{option}}</span>
-              </li>
-            </ul>
-            <div nz-table-filter>
-              <span nz-table-filter-clear (click)="condition.category = '';listTodayProduct('reload')">重置</span>
-            </div>
-          </nz-dropdown>
-        </th>
-        <th nz-th nzWidth="20%"><span>价格</span></th>
-        <th nz-th nzWidth="20%" *ngIf="groupId && (isGroupOnwer(groupId) || !isGroupExpired(groupId))"><span>操作</span>
-        </th>
-      </tr>
-      </thead>
-      <tbody nz-tbody>
-      <tr nz-tbody-tr *ngFor="let data of nzTable.data; let i = index;"
-          [class.invalid-product]="!data.valid">
-        <td nz-td nzWidth="10%">{{i+1}}</td>
-        <td nz-td nzWidth="30%">{{data.name}}</td>
-        <td nz-td nzWidth="20%">{{data.category}}</td>
-        <td nz-td nzWidth="20%">{{data.price}}</td>
-        <td nz-td nzWidth="20%" *ngIf="groupId && (isGroupOnwer(groupId) || !isGroupExpired(groupId))">
-          <a (click)="openOrderConfirm(data)">点餐</a>
-        </td>
-      </tr>
-      </tbody>
-    </nz-table>
+    <nz-tabset>
+      <nz-tab>
+        <ng-template #nzTabHeading>
+          表格式菜单
+        </ng-template>
+        <nz-table #nzTable [nzDataSource]="products" [nzIsPagination]="false"
+                  nzSize="small" [nzShowTotal]="true"
+                  [nzLoading]="tableLoading">
+          <thead nz-thead>
+          <tr>
+            <th nz-th nzWidth="10%">#</th>
+            <th nz-th nzWidth="30%"><span>菜单名</span></th>
+            <th nz-th nzWidth="20%">
+              <span>类别</span>
+              <nz-dropdown>
+                <i class="anticon anticon-filter" nz-dropdown
+                   [style.color]="condition.category ? 'red' : ''"></i>
+                <ul nz-menu>
+                  <li nz-menu-item *ngFor="let option of categoryOptions"
+                      (click)="condition.category = option;listTodayProduct('reload')">
+                    <span>{{option}}</span>
+                  </li>
+                </ul>
+                <div nz-table-filter>
+                  <span nz-table-filter-clear (click)="condition.category = '';listTodayProduct('reload')">重置</span>
+                </div>
+              </nz-dropdown>
+            </th>
+            <th nz-th nzWidth="20%"><span>价格</span></th>
+            <th nz-th nzWidth="20%" *ngIf="groupId && (isGroupOnwer(groupId) || !isGroupExpired(groupId))">
+              <span>操作</span>
+            </th>
+          </tr>
+          </thead>
+          <tbody nz-tbody>
+          <tr nz-tbody-tr *ngFor="let data of nzTable.data; let i = index;"
+              [class.invalid-product]="!data.valid">
+            <td nz-td nzWidth="10%">{{i+1}}</td>
+            <td nz-td nzWidth="30%">{{data.name}}</td>
+            <td nz-td nzWidth="20%">{{data.category}}</td>
+            <td nz-td nzWidth="20%">{{data.price}}</td>
+            <td nz-td nzWidth="20%" *ngIf="groupId && (isGroupOnwer(groupId) || !isGroupExpired(groupId))">
+              <a (click)="openOrderConfirm(data)">点餐</a>
+            </td>
+          </tr>
+          </tbody>
+        </nz-table>
+      </nz-tab>
+      <nz-tab>
+        <ng-template #nzTabHeading>
+          内容式菜单
+        </ng-template>
+        敬请期待！
+      </nz-tab>
+    </nz-tabset>
   </div>
 </div>
 

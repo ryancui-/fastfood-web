@@ -4,7 +4,7 @@
     <ul nz-menu [nzTheme]="'dark'" [nzMode]="'horizontal'" style="line-height: 64px;">
       <li nz-menu-item routerLink="/groups" [nzSelected]="store.url === '/groups'" style="outline: none;">点餐</li>
       <li nz-menu-item routerLink="/products"
-          *ngIf="store.user.is_admin"
+          *ngIf="store.user?.is_admin"
           [nzSelected]="store.url === '/products'"
           style="outline: none;">菜单
       </li>
@@ -21,7 +21,6 @@
       <router-outlet></router-outlet>
     </div>
   </nz-content>
-  <nz-footer style="text-align: center;">Fastfood Admin By ryancui-</nz-footer>
 </nz-layout>
 
 
