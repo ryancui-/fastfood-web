@@ -1,7 +1,7 @@
 import {Component, OnDestroy, OnInit, QueryList, ViewChild, ViewChildren} from '@angular/core';
 import {FormBuilder, FormGroup, Validators} from '@angular/forms';
 import {Router} from '@angular/router';
-import {NzInputDirectiveComponent, NzMessageService, NzModalService} from 'ng-zorro-antd';
+import {NzInputDirectiveComponent, NzModalService, NzNotificationService} from 'ng-zorro-antd';
 import {ProductService} from '../product.service';
 import {Subject} from 'rxjs/Subject';
 import 'rxjs/add/operator/debounceTime';
@@ -58,7 +58,7 @@ export class ProductsPageComponent implements OnInit, OnDestroy {
   constructor(private formBuilder: FormBuilder,
               private router: Router,
               private productService: ProductService,
-              private msgService: NzMessageService,
+              private notificationService: NzNotificationService,
               private dialogService: NzModalService) {
   }
 
@@ -167,7 +167,7 @@ export class ProductsPageComponent implements OnInit, OnDestroy {
       this.isSaving = true;
       this.productService.add(product).subscribe(data => {
         this.isSaving = false;
-        this.msgService.success('新增成功');
+        this.notificationService.success('成功', '新增成功');
         this.listProduct('refresh');
         this.productDialog.destroy();
       });
@@ -175,7 +175,7 @@ export class ProductsPageComponent implements OnInit, OnDestroy {
       this.isSaving = true;
       this.productService.edit(product).subscribe(data => {
         this.isSaving = false;
-        this.msgService.success('修改成功');
+        this.notificationService.success('成功', '修改成功');
         this.listProduct('refresh');
         this.productDialog.destroy();
       });
@@ -186,7 +186,7 @@ export class ProductsPageComponent implements OnInit, OnDestroy {
   confirmChangeStatus(oldProduct) {
     this.productService.changeStatus(oldProduct.id, oldProduct.valid ? 0 : 1)
       .subscribe(data => {
-        this.msgService.success(oldProduct.valid ? '下架成功' : '上架成功');
+        this.notificationService.success('成功', oldProduct.valid ? '下架成功' : '上架成功');
         this.listProduct('refresh');
       });
   }

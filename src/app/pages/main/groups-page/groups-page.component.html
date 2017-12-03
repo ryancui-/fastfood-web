@@ -54,7 +54,7 @@
         订单团列表
       </div>
       <nz-spin *ngIf="groupLoading" [nzTip]="'正在读取数据...'" style="text-align: center;"></nz-spin>
-      <div *ngIf="groups.length === 0" class="groups-none">
+      <div *ngIf="!groupLoading && groups.length === 0" class="groups-none">
         不存在的
       </div>
       <ng-template ngFor let-group [ngForOf]="groups">

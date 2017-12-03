@@ -3,7 +3,7 @@ import {ProductService} from '../product.service';
 import {GroupService} from '../group.service';
 import {FormBuilder, FormGroup, Validators} from '@angular/forms';
 import Utils from '../../../utils';
-import {NzMessageService, NzModalService, NzNotificationService} from 'ng-zorro-antd';
+import {NzModalService, NzNotificationService} from 'ng-zorro-antd';
 import {OrderService} from '../order.service';
 
 import 'rxjs/add/operator/do';
@@ -54,7 +54,6 @@ export class GroupsPageComponent implements OnInit {
               private orderService: OrderService,
               private formBuilder: FormBuilder,
               private nzNotificationService: NzNotificationService,
-              private msgService: NzMessageService,
               private modalService: NzModalService,
               private groupService: GroupService,
               public store: Store) {
@@ -268,7 +267,7 @@ export class GroupsPageComponent implements OnInit {
   // 改变团组状态
   changeGroupStatus(status) {
     this.groupService.changeStatus(this.groupId, status ? 3 : 2).subscribe(() => {
-      this.msgService.success('修改成功');
+      this.nzNotificationService.success('成功', '修改成功');
       this.listGroups().subscribe(() => {
         this.groupId = null;
         this.sideBlockStatus = 1;
@@ -312,7 +311,7 @@ export class GroupsPageComponent implements OnInit {
   // 删除订单
   removeOrder(orderId) {
     this.orderService.deleteOrder(orderId).subscribe(() => {
-      this.msgService.success('删除成功');
+      this.nzNotificationService.success('成功', '删除成功');
       this.listGroups().subscribe(() => {
         this.orders = this.initOrders(this.groups.find(group => group.id === this.groupId).orders);
       });

@@ -2,7 +2,7 @@ import {Injectable} from '@angular/core';
 import {HttpClient} from '@angular/common/http';
 import 'rxjs/add/operator/map';
 import {Observable} from 'rxjs/Observable';
-import {NzMessageService} from 'ng-zorro-antd';
+import {NzNotificationService} from 'ng-zorro-antd';
 import {BaseService} from './base.service';
 import {Store} from './store';
 
@@ -11,7 +11,7 @@ export class AuthService extends BaseService {
 
   constructor(private hc: HttpClient,
               private store: Store,
-              private msgService: NzMessageService) {
+              private notificationService: NzNotificationService) {
     super(hc);
   }
 
@@ -32,7 +32,7 @@ export class AuthService extends BaseService {
         localStorage.setItem('user', JSON.stringify(res.data.userInfo));
         return true;
       } else {
-        this.msgService.error(res.errmsg);
+        this.notificationService.error('错误', res.errmsg);
         return false;
       }
     });
