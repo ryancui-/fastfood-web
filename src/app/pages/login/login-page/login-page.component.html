@@ -42,6 +42,7 @@
         <div nz-form-item style="margin-bottom: 0;">
           <div nz-form-control>
             <button nz-button class="login-form-button"
+                    [nzLoading]="waitingResp"
                     [nzType]="'primary'" [nzSize]="'large'"
                     [disabled]="loginForm.invalid">登录
             </button>
