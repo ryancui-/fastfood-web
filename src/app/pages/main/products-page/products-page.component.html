@@ -120,7 +120,7 @@
       </div>
       <div nz-form-control nz-col [nzSm]="20" [nzValidateStatus]="productForm.get('category')">
         <nz-select style="width: 120px;" formControlName="category" nzAllowClear>
-          <nz-option *ngFor="let option of categoryOptions"
+          <nz-option *ngFor="let option of categoryNewOptions"
                      [nzLabel]="option"
                      [nzValue]="option">
           </nz-option>

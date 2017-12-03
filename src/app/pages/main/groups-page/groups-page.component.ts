@@ -28,9 +28,7 @@ export class GroupsPageComponent implements OnInit {
   page = 1;
   tableLoading = false;
   condition: any = {};
-  categoryOptions = [
-    '每旬菜式', '明炉烧味', '天天靓汤'
-  ];
+  categoryOptions = [];
   selectedProduct;
 
   // 订单团
@@ -71,6 +69,10 @@ export class GroupsPageComponent implements OnInit {
     this.orderAddForm = this.formBuilder.group({
       quantity: [null, Validators.required],
       remark: ''
+    });
+
+    this.productService.listCategories().subscribe(data => {
+      this.categoryOptions = data;
     });
 
     this.listTodayProduct('reload');

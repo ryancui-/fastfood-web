@@ -56,6 +56,14 @@ export class ProductService extends BaseService {
   }
 
   /**
+   * 列出所有菜单分类
+   * @returns {Observable<R>}
+   */
+  listCategories() {
+    return this.get('/product/categories').map(res => res.data);
+  }
+
+  /**
    * 增加菜单选项
    * @param productId
    * @param optionName

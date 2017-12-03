@@ -24,8 +24,19 @@ export class ProductsPageComponent implements OnInit, OnDestroy {
 
   productDialog;
 
-  categoryOptions = [
-    '每旬菜式', '明炉烧味', '天天靓汤'
+  // 筛选类别
+  categoryOptions = [];
+
+  // 新建菜单类别，固定在前端
+  categoryNewOptions = [
+    '每旬菜式',
+    '热销菜式',
+    '明炉烧味',
+    '滋补炖品',
+    '天天靓汤',
+    '港式粉面',
+    '冷热饮品',
+    '原盅蒸饭'
   ];
 
   searchKeyUp = new Subject<any>();
@@ -65,6 +76,10 @@ export class ProductsPageComponent implements OnInit, OnDestroy {
       part_of_month: 0,
       day_of_week: 0,
       spicy: 0,
+    });
+
+    this.productService.listCategories().subscribe(data => {
+      this.categoryOptions = data;
     });
 
     this.listProduct('reload');
