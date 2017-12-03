@@ -145,19 +145,27 @@ export class GroupsPageComponent implements OnInit {
   initDueTimers() {
     this.dueTimers = [];
     this.groups.forEach(group => {
-      const timer = setInterval(() => {
-        const dueTime = new Date(group.due_time).getTime();
-        const now = new Date().getTime();
-        group.remainTime = dueTime - now;
-      }, 1000);
-      this.dueTimers.push(timer);
+      // 已过期或者状态不是已征集的 push null ，不需要定时
+      if (!this.isGroupActive(group.id)) {
+        this.dueTimers.push(null);
+      } else if (this.isGroupExpired(group.id)) {
+        group.remainTime = -1;
+        this.dueTimers.push(null);
+      } else {
+        const timer = setInterval(() => {
+          const dueTime = new Date(group.due_time).getTime();
+          const now = new Date().getTime();
+          group.remainTime = dueTime - now;
+        }, 1000);
+        this.dueTimers.push(timer);
+      }
     });
   }
 
   // 格式化剩余时间
   formatRemainTime(remain) {
     if (remain === undefined) {
-      return '还在算呢傻孩子';
+      return '';
     } else if (remain < 0) {
       return '已经截止啦';
     } else {
@@ -180,6 +188,11 @@ export class GroupsPageComponent implements OnInit {
   // 选择某个订单团
   selectGroup(groupId) {
     if (this.sideBlockStatus !== 3) {
+      // 不在征集中 tab 进入
+      if (this.isGroupActive(groupId) && this.groupType !== 1) {
+        this.switchGroups(true, 1);
+      }
+
       this.groupId = groupId;
       this.orders = this.initOrders(this.groups.find(group => group.id === groupId).orders);
       console.log(this.orders);
@@ -222,19 +235,29 @@ export class GroupsPageComponent implements OnInit {
     });
   }
 
-  // 当前用户是否是已选择订单团的发起人
-  isGroupOnwer() {
-    return this.groups.find(g => g.id === this.groupId).composer_user_id === this.store.user.id;
+  // 当前用户是否是订单团的发起人
+  isGroupOnwer(groupId) {
+    if (this.groups.length === 0 || !groupId) {
+      return false;
+    }
+    return this.groups.find(g => g.id === groupId).composer_user_id === this.store.user.id;
   }
 
-  // 已选择订单团是否已过期
-  isGroupExpired() {
+  // 订单团是否已过期
+  isGroupExpired(groupId) {
+    if (this.groups.length === 0 || !groupId) {
+      return false;
+    }
     return new Date().getTime() -
-      new Date(this.groups.find(g => g.id === this.groupId).due_time).getTime() > 0;
+      new Date(this.groups.find(g => g.id === groupId).due_time).getTime() > 0;
   }
 
-  isGroupActive() {
-    return this.groups.find(g => g.id === this.groupId).status === 1;
+  // 订单团是否为征集中状态
+  isGroupActive(groupId) {
+    if (this.groups.length === 0 || !groupId) {
+      return false;
+    }
+    return this.groups.find(g => g.id === groupId).status === 1;
   }
 
   // 改变团组状态

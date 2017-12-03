@@ -9,7 +9,7 @@
               (click)="addGroup()">保存
       </button>
 
-      <nz-button-group *ngIf="sideBlockStatus === 3 && isGroupOnwer() && isGroupActive()">
+      <nz-button-group *ngIf="sideBlockStatus === 3 && isGroupOnwer(groupId) && isGroupActive(groupId)">
         <button nz-button [nzType]="'primary'" (click)="changeGroupStatus(false)">
           <i class="anticon anticon-check"></i>
         </button>
@@ -86,7 +86,7 @@
           <ng-template ngFor let-row [ngForOf]="order.rows">
             <div class="order-item-line">
               <div class="order-remove">
-                <a *ngIf="order.user.id === store.user.id" (click)="removeOrder(row.id)">
+                <a *ngIf="isGroupActive(groupId) && order.user.id === store.user.id" (click)="removeOrder(row.id)">
                   <i class="anticon anticon-close"></i>
                 </a>
               </div>
@@ -128,7 +128,8 @@
           </nz-dropdown>
         </th>
         <th nz-th nzWidth="20%"><span>价格</span></th>
-        <th nz-th nzWidth="20%" *ngIf="groupId && (isGroupOnwer() || !isGroupExpired())"><span>操作</span></th>
+        <th nz-th nzWidth="20%" *ngIf="groupId && (isGroupOnwer(groupId) || !isGroupExpired(groupId))"><span>操作</span>
+        </th>
       </tr>
       </thead>
       <tbody nz-tbody>
@@ -138,7 +139,7 @@
         <td nz-td nzWidth="30%">{{data.name}}</td>
         <td nz-td nzWidth="20%">{{data.category}}</td>
         <td nz-td nzWidth="20%">{{data.price}}</td>
-        <td nz-td nzWidth="20%" *ngIf="groupId && (isGroupOnwer() || !isGroupExpired())">
+        <td nz-td nzWidth="20%" *ngIf="groupId && (isGroupOnwer(groupId) || !isGroupExpired(groupId))">
           <a (click)="openOrderConfirm(data)">点餐</a>
         </td>
       </tr>
