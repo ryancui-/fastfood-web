@@ -25,11 +25,8 @@ export class ProductsPageComponent implements OnInit, OnDestroy {
 
   productDialog;
 
-  // 筛选类别
-  categoryOptions = [];
-
   // 新建菜单类别，固定在前端
-  categoryNewOptions = [
+  categoryOptions = [
     '每旬菜式',
     '热销菜式',
     '明炉烧味',
@@ -75,10 +72,6 @@ export class ProductsPageComponent implements OnInit, OnDestroy {
       part_of_month: 0,
       day_of_week: 0,
       spicy: 0,
-    });
-
-    this.productService.listCategories().subscribe(data => {
-      this.categoryOptions = data;
     });
 
     this.listProduct('reload');
