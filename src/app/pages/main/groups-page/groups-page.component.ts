@@ -3,7 +3,7 @@ import {ProductService} from '../product.service';
 import {GroupService} from '../group.service';
 import {FormBuilder, FormGroup, Validators} from '@angular/forms';
 import Utils from '../../../utils';
-import {NzModalService, NzNotificationService} from 'ng-zorro-antd';
+import {NzMessageService, NzModalService, NzNotificationService} from 'ng-zorro-antd';
 import {OrderService} from '../order.service';
 
 import 'rxjs/add/operator/do';
@@ -56,6 +56,7 @@ export class GroupsPageComponent implements OnInit {
   constructor(private productService: ProductService,
               private orderService: OrderService,
               private formBuilder: FormBuilder,
+              private msgService: NzMessageService,
               private nzNotificationService: NzNotificationService,
               private modalService: NzModalService,
               private groupService: GroupService,
@@ -293,9 +294,10 @@ export class GroupsPageComponent implements OnInit {
     this.orderDialogInst = this.modalService.open({
       title: '确认点餐',
       content: this.orderDialog,
-      width: 400,
+      showConfirmLoading: true,
+      width: 450,
       onOk: () => {
-        this.addOrder();
+        return this.addOrder().toPromise();
       }
     });
   }
@@ -309,16 +311,19 @@ export class GroupsPageComponent implements OnInit {
       remark: this.orderAddForm.get('remark').value
     };
 
-    this.orderService.addOrderToGroup(params).subscribe(() => {
+    return this.orderService.addOrderToGroup(params).map(() => {
       this.listGroups().subscribe(() => {
         this.orders = this.initOrders(this.groups.find(group => group.id === this.groupId).orders);
       });
+      return true;
     });
   }
 
   // 删除订单
   removeOrder(orderId) {
+    const msgId = this.msgService.loading('正在删除订单...').messageId;
     this.orderService.deleteOrder(orderId).subscribe(() => {
+      this.msgService.remove(msgId);
       this.nzNotificationService.success('成功', '删除成功');
       this.listGroups().subscribe(() => {
         this.orders = this.initOrders(this.groups.find(group => group.id === this.groupId).orders);
