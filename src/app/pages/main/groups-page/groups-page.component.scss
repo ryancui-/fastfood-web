@@ -34,7 +34,11 @@
     display: flex;
     flex-direction: row;
     align-items: center;
-    margin: 15px 0;
+    margin: 10px 0;
+  }
+
+  .group-item-name {
+    font-size: 15px;
   }
 
   .group-item-arrow {
@@ -50,7 +54,7 @@
 }
 
 .item-selected {
-  background-color: #e8fff8;
+  background-color: #f7f7f7;
 }
 
 // 订单

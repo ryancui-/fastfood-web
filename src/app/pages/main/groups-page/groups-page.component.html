@@ -2,19 +2,19 @@
   <div class="side-block">
     <div style="display: flex;justify-content: space-between; align-items: center;margin-bottom: 10px;">
       <button *ngIf="sideBlockStatus === 1" nz-button [nzType]="'primary'" (click)="openAddGroup()">建团</button>
-      <button *ngIf="sideBlockStatus === 2" nz-button [nzType]="'primary'" (click)="cancelAddGroup()">取消</button>
-      <button *ngIf="sideBlockStatus === 3" nz-button [nzType]="'primary'" (click)="exitGroup()">返回</button>
+      <button *ngIf="sideBlockStatus === 2" nz-button (click)="cancelAddGroup()">取消</button>
+      <button *ngIf="sideBlockStatus === 3" nz-button (click)="exitGroup()">返回</button>
 
       <button *ngIf="sideBlockStatus === 2" nz-button [nzType]="'primary'"
               (click)="addGroup()">保存
       </button>
 
       <nz-button-group *ngIf="sideBlockStatus === 3 && isGroupOnwer(groupId) && isGroupActive(groupId)">
-        <button nz-button [nzType]="'primary'" (click)="changeGroupStatus(false)">
-          <i class="anticon anticon-check"></i>
+        <button nz-button (click)="changeGroupStatus(false)">
+          <span>完成</span>
         </button>
-        <button nz-button [nzType]="'primary'" (click)="changeGroupStatus(true)">
-          <i class="anticon anticon-close"></i>
+        <button nz-button [nzType]="'danger'" (click)="changeGroupStatus(true)">
+          <span>取消</span>
         </button>
       </nz-button-group>
 
@@ -49,6 +49,7 @@
     </div>
 
     <div *ngIf="sideBlockStatus !== 2">
+      <nz-spin *ngIf="groupLoading" [nzTip]="'正在读取数据...'" style="text-align: center;"></nz-spin>
       <ng-template ngFor let-group [ngForOf]="groups">
         <div class="group-item"
              [class.item-hover]="sideBlockStatus === 1"
@@ -57,9 +58,12 @@
              (click)="selectGroup(group.id)">
           <div class="group-item-info">
             <div class="group-item-info-line">
-              <nz-avatar nzSize="small" nzIcon="user" [nzSrc]="group.composer_img || ''"></nz-avatar>
-              <span style="margin-left: 10px;flex: 1;">{{group.name}}</span>
+              <nz-avatar nzSize="small" nzIcon="user" [nzSrc]="group.composer?.avatar_url || ''"></nz-avatar>
+              <span style="margin-left: 10px;flex: 1;">{{group.composer?.username}}</span>
               <span class="price">￥{{group.totalPrice}}</span>
+            </div>
+            <div class="group-item-info-line">
+              <span class="group-item-name">{{group.name}}</span>
             </div>
             <div class="group-item-info-line">
               <nz-tag [nzColor]="'green'" *ngIf="group.status === 1">征集中</nz-tag>
@@ -103,9 +107,8 @@
   </div>
 
   <div class="product-block">
-    <nz-table #nzTable [nzAjaxData]="products" [nzPageSize]="15"
-              nzSize="small" [nzShowTotal]="true" [nzTotal]="total"
-              [(nzPageIndex)]="page" (nzPageIndexChange)="listTodayProduct('refresh')"
+    <nz-table #nzTable [nzDataSource]="products" [nzIsPagination]="false"
+              nzSize="small" [nzShowTotal]="true"
               [nzLoading]="tableLoading">
       <thead nz-thead>
       <tr>

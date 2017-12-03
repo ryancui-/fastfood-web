@@ -109,6 +109,7 @@ export class GroupsPageComponent implements OnInit {
   // 列出所有团组
   listGroups() {
     this.groupLoading = true;
+    this.groups = [];
     return this.groupService.listAllGroup(this.groupType).do(data => {
       this.groupLoading = false;
       this.clearDueTimers();
