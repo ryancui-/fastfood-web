@@ -4,6 +4,7 @@ import {GroupsPageComponent} from './groups-page/groups-page.component';
 import {ProductsPageComponent} from './products-page/products-page.component';
 import {NeedLoginGuard} from '../../need-login.guard';
 import {MainPageComponent} from './main-page/main-page.component';
+import {NeedAdminGuard} from '../../need-admin.guard';
 
 const routes: Routes = [{
   path: '',
@@ -18,7 +19,7 @@ const routes: Routes = [{
   }, {
     path: 'products',
     component: ProductsPageComponent,
-    canActivate: [NeedLoginGuard]
+    canActivate: [NeedLoginGuard, NeedAdminGuard]
   }]
 }];
 

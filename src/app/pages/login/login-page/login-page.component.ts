@@ -50,7 +50,7 @@ export class LoginPageComponent implements OnInit {
     });
 
     this.registerForm = this.formBuilder.group({
-      username: ['', Validators.required, this.checkUsername.bind(this)],
+      username: ['', Validators.required],
       password: ['', Validators.required],
       inviteCode: ['', Validators.required]
     });
@@ -110,8 +110,6 @@ export class LoginPageComponent implements OnInit {
 
     return this.authService.checkUsername(username).map((res: any) => {
       switch (res.errno) {
-        case 12000:
-          return {error: true, has_admin: true};
         case 12001:
           return {error: true, has_one: true};
         default:

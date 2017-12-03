@@ -78,10 +78,6 @@
               请输入用户名
             </div>
             <div nz-form-explain
-                 *ngIf="registerForm.get('username').dirty && registerForm.get('username').hasError('has_admin')">
-              不能有 admin 出现
-            </div>
-            <div nz-form-explain
                  *ngIf="registerForm.get('username').dirty && registerForm.get('username').hasError('has_one')">
               用户名已注册
             </div>

@@ -2,9 +2,9 @@
   <nz-header>
     <div class="logo"></div>
     <ul nz-menu [nzTheme]="'dark'" [nzMode]="'horizontal'" style="line-height: 64px;">
-      <li nz-menu-item routerLink="/groups" [nzSelected]="store.url === '/groups'" style="outline: none;">订单团</li>
+      <li nz-menu-item routerLink="/groups" [nzSelected]="store.url === '/groups'" style="outline: none;">点餐</li>
       <li nz-menu-item routerLink="/products"
-          *ngIf="store.user.username.indexOf('admin') !== -1"
+          *ngIf="store.user.is_admin"
           [nzSelected]="store.url === '/products'"
           style="outline: none;">菜单
       </li>

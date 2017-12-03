@@ -10,6 +10,7 @@ import {NeedLoginGuard} from './need-login.guard';
 import {Store} from './store';
 import {HttpClientModule} from '@angular/common/http';
 import {AuthService} from './auth.service';
+import {NeedAdminGuard} from './need-admin.guard';
 
 @NgModule({
   declarations: [
@@ -26,6 +27,7 @@ import {AuthService} from './auth.service';
   ],
   providers: [
     NeedLoginGuard,
+    NeedAdminGuard,
     Store,
     AuthService
   ],
