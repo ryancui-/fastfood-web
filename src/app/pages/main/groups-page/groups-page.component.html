@@ -5,15 +5,19 @@
       <button *ngIf="sideBlockStatus === 2" nz-button (click)="cancelAddGroup()">取消</button>
       <button *ngIf="sideBlockStatus === 3" nz-button (click)="exitGroup()">返回</button>
 
-      <button *ngIf="sideBlockStatus === 2" nz-button [nzType]="'primary'"
+      <button *ngIf="sideBlockStatus === 2" nz-button
+              [nzType]="'primary'"
+              [nzLoading]="waitingResp"
               (click)="addGroup()">保存
       </button>
 
       <nz-button-group *ngIf="sideBlockStatus === 3 && isGroupOnwer(groupId) && isGroupActive(groupId)">
-        <button nz-button (click)="changeGroupStatus(false)">
+        <button nz-button (click)="changeGroupStatus(false)"
+                [nzLoading]="waitingResp">
           <span>完成</span>
         </button>
-        <button nz-button [nzType]="'danger'" (click)="changeGroupStatus(true)">
+        <button nz-button [nzType]="'danger'" (click)="changeGroupStatus(true)"
+                [nzLoading]="waitingResp">
           <span>取消</span>
         </button>
       </nz-button-group>

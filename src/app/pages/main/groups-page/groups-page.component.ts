@@ -16,6 +16,9 @@ import {Store} from '../../../store';
 })
 export class GroupsPageComponent implements OnInit {
 
+  // 等到请求完成
+  waitingResp = false;
+
   // 侧边栏状态
   // 1 - 显示订单团列表
   // 2 - 添加团
@@ -232,9 +235,12 @@ export class GroupsPageComponent implements OnInit {
     console.log(this.groupAddForm.value);
     const params = this.groupAddForm.value;
     params.dueTime = Utils.formatDateTime(params.dueTime);
+
+    this.waitingResp = true;
     this.groupService.addGroup(params).subscribe(data => {
       this.listGroups().subscribe(() => {
         this.selectGroup(data);
+        this.waitingResp = false;
       });
     });
   }
@@ -266,11 +272,13 @@ export class GroupsPageComponent implements OnInit {
 
   // 改变团组状态
   changeGroupStatus(status) {
+    this.waitingResp = true;
     this.groupService.changeStatus(this.groupId, status ? 3 : 2).subscribe(() => {
+      this.waitingResp = false;
       this.nzNotificationService.success('成功', '修改成功');
+      this.sideBlockStatus = 1;
       this.listGroups().subscribe(() => {
         this.groupId = null;
-        this.sideBlockStatus = 1;
       });
     });
   }

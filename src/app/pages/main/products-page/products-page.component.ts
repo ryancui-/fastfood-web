@@ -9,6 +9,7 @@ import 'rxjs/add/operator/distinctUntilChanged';
 import 'rxjs/add/operator/mergeMap';
 import 'rxjs/add/observable/of';
 import 'rxjs/add/operator/delay';
+import {Observable} from 'rxjs/Observable';
 
 @Component({
   selector: 'app-products-page',
@@ -52,8 +53,6 @@ export class ProductsPageComponent implements OnInit, OnDestroy {
   @ViewChildren('option_input') input: QueryList<NzInputDirectiveComponent>;
   inputVisible;
   optionValue;
-
-  isSaving = false;
 
   constructor(private formBuilder: FormBuilder,
               private router: Router,
@@ -151,33 +150,32 @@ export class ProductsPageComponent implements OnInit, OnDestroy {
     this.productDialog = this.dialogService.open({
       title: !oldProduct ? '新增菜单' : '修改菜单',
       content: this.productDialogRef,
+      showConfirmLoading: true,
       onOk: () => {
-        this.saveProduct(!oldProduct);
+        return this.saveProduct(!oldProduct).toPromise();
       },
     });
   }
 
   // 保存菜单
-  saveProduct(newProduct: boolean) {
+  saveProduct(newProduct: boolean): Observable<boolean> {
     const product = this.productForm.value;
     product.spicy = product.spicy ? 1 : 0;
     console.log(product);
 
     if (newProduct) {
-      this.isSaving = true;
-      this.productService.add(product).subscribe(data => {
-        this.isSaving = false;
+      return this.productService.add(product).map(data => {
         this.notificationService.success('成功', '新增成功');
         this.listProduct('refresh');
         this.productDialog.destroy();
+        return true;
       });
     } else {
-      this.isSaving = true;
-      this.productService.edit(product).subscribe(data => {
-        this.isSaving = false;
+      return this.productService.edit(product).map(data => {
         this.notificationService.success('成功', '修改成功');
         this.listProduct('refresh');
         this.productDialog.destroy();
+        return true;
       });
     }
   }

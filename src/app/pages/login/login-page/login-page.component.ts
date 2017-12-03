@@ -94,7 +94,9 @@ export class LoginPageComponent implements OnInit {
     const query = this.registerForm.value;
     query.password = Md5.hashStr(query.password);
 
+    this.waitingResp = true;
     this.authService.register(query).subscribe((res: any) => {
+      this.waitingResp = false;
       if (res.errno === 0) {
         this.notificationService.success('恭喜', `${query.username} 注册成功，请登录系统`);
         this.switchTab();
