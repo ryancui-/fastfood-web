@@ -189,15 +189,15 @@ export class GroupsPageComponent implements OnInit {
   // 选择某个订单团
   selectGroup(groupId) {
     if (this.sideBlockStatus !== 3) {
-      // 不在征集中 tab 进入
-      if (this.isGroupActive(groupId) && this.groupType !== 1) {
-        this.switchGroups(true, 1);
-      }
-
       this.groupId = groupId;
       this.orders = this.initOrders(this.groups.find(group => group.id === groupId).orders);
       console.log(this.orders);
       this.sideBlockStatus = 3;
+
+      // 不在征集中 tab 进入
+      if (this.isGroupActive(groupId) && this.groupType !== 1) {
+        this.switchGroups(true, 1);
+      }
     }
   }
 
@@ -206,7 +206,7 @@ export class GroupsPageComponent implements OnInit {
     const today = new Date();
     this.groupAddForm.patchValue({
       dueTime: today,
-      groupName: today.getDate() + ' 新团'
+      groupName: Utils.formatDate(today) + ' 订饭'
     });
 
     this.sideBlockStatus = 2;
@@ -216,6 +216,10 @@ export class GroupsPageComponent implements OnInit {
   cancelAddGroup() {
     this.groupAddForm.reset();
     this.sideBlockStatus = 1;
+  }
+
+  disabledDate(current) {
+    return current && current.getTime() < Date.now();
   }
 
   // 退出特定订单团

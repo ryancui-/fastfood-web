@@ -9,7 +9,7 @@
           style="outline: none;">菜单
       </li>
       <li nz-submenu style="float: right;">
-        <span title><i class="anticon anticon-user"></i>{{store.user.username}}</span>
+        <span title><i class="anticon anticon-user"></i>{{store.user?.username}}</span>
         <ul>
           <li nz-menu-item (click)="logout()">退出</li>
         </ul>

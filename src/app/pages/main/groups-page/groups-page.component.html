@@ -31,6 +31,7 @@
       </div>
     </div>
 
+    <!-- 添加订单团 -->
     <div *ngIf="sideBlockStatus === 2">
       <form nz-form [formGroup]="groupAddForm" (ngSubmit)="addGroup()">
         <div nz-form-item>
@@ -41,15 +42,21 @@
         </div>
         <div nz-form-item>
           <div nz-form-control [nzValidateStatus]="groupAddForm.get('dueTime')">
-            <nz-datepicker style="width: 100%;" [nzSize]="'large'" formControlName="dueTime" [nzShowTime]="true"
-                           [nzPlaceHolder]="'选择截止日期'" [nzFormat]="'YYYY-MM-DD HH:mm:ss'"></nz-datepicker>
+            <nz-timepicker [nzSize]="'large'" formControlName="dueTime" [nzFormat]="'HH:mm'"></nz-timepicker>
           </div>
         </div>
       </form>
     </div>
 
+    <!-- 订单团列表 -->
     <div *ngIf="sideBlockStatus !== 2">
+      <div class="groups-title">
+        订单团列表
+      </div>
       <nz-spin *ngIf="groupLoading" [nzTip]="'正在读取数据...'" style="text-align: center;"></nz-spin>
+      <div *ngIf="groups.length === 0" class="groups-none">
+        不存在的
+      </div>
       <ng-template ngFor let-group [ngForOf]="groups">
         <div class="group-item"
              [class.item-hover]="sideBlockStatus === 1"
@@ -79,7 +86,14 @@
       </ng-template>
     </div>
 
+    <!-- 订单列表 -->
     <div *ngIf="sideBlockStatus === 3">
+      <div class="orders-title">
+        订单列表
+      </div>
+      <div *ngIf="orders.length === 0" class="orders-none">
+        不存在的
+      </div>
       <ng-template ngFor let-order [ngForOf]="orders">
         <div class="order-item">
           <div class="order-item-user-line">
@@ -90,7 +104,7 @@
           <ng-template ngFor let-row [ngForOf]="order.rows">
             <div class="order-item-line">
               <div class="order-remove">
-                <a *ngIf="isGroupActive(groupId) && order.user.id === store.user.id" (click)="removeOrder(row.id)">
+                <a *ngIf="isGroupActive(groupId) && order.user.id === store.user?.id" (click)="removeOrder(row.id)">
                   <i class="anticon anticon-close"></i>
                 </a>
               </div>
