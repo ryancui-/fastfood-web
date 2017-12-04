@@ -167,7 +167,8 @@
             </td>
             <td nz-td nzWidth="20%">{{data.category}}</td>
             <td nz-td nzWidth="20%">{{data.price}}</td>
-            <td nz-td nzWidth="20%" *ngIf="groupId && (isGroupOnwer(groupId) || !isGroupExpired(groupId))">
+            <td nz-td nzWidth="20%"
+                *ngIf="groupId && isGroupActive(groupId) && (isGroupOnwer(groupId) || !isGroupExpired(groupId))">
               <a (click)="openOrderConfirm(data)">点餐</a>
             </td>
           </tr>
