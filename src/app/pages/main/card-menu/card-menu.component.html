@@ -1,7 +1,7 @@
 <div class="category-group" *ngFor="let option of store.categoryOptions">
   <h3>{{option}}</h3>
-  <div nz-row class="group">
-    <div nz-col [nzSpan]="12" class="menu-item"
+  <div nz-row [nzType]="'flex'" nzJustify="space-between" class="group">
+    <div nz-col [nzSpan]="11" class="menu-item"
          *ngFor="let menu of filterByCategory(option)"
          (click)="selectMenu(menu)">
       <div class="menu-name">
