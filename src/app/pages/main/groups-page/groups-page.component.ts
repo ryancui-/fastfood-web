@@ -1,8 +1,7 @@
 import {Component, OnInit, ViewChild} from '@angular/core';
 import {ProductService} from '../product.service';
 import {GroupService} from '../group.service';
-import {FormBuilder, FormGroup, Validators} from '@angular/forms';
-import Utils from '../../../utils';
+import {FormBuilder, Validators} from '@angular/forms';
 import {NzMessageService, NzModalService, NzNotificationService} from 'ng-zorro-antd';
 import {OrderService} from '../order.service';
 
@@ -16,32 +15,17 @@ import {ActivatedRoute} from '@angular/router';
   styleUrls: ['./groups-page.component.scss']
 })
 export class GroupsPageComponent implements OnInit {
-
-  // 等到请求完成
-  waitingResp = false;
-
-  // 侧边栏状态
-  // 1 - 显示订单团列表
-  // 2 - 添加团
-  // 3 - 显示订单团详情
-  sideBlockStatus = 1;
-
   selectedProduct;
-
   products = [];
 
   // 订单团
-  groups;
+  groups = [];
   dueTimers;
   groupLoading = false;
-  groupType = 1;
-
-  // 创建订单团
-  groupAddForm: FormGroup;
 
   // 选择订单团
   selectedGroup: any = {};
-  orders;
+  orders = [];
   orderLoading = false;
 
   @ViewChild('order_dialog') orderDialog;
@@ -62,11 +46,6 @@ export class GroupsPageComponent implements OnInit {
   }
 
   ngOnInit() {
-    this.groupAddForm = this.formBuilder.group({
-      dueTime: [null, Validators.required],
-      groupName: ['', Validators.required]
-    });
-
     this.orderAddForm = this.formBuilder.group({
       quantity: [null, Validators.required],
       remark: ''
@@ -90,7 +69,7 @@ export class GroupsPageComponent implements OnInit {
   listGroups() {
     this.groupLoading = true;
     this.groups = [];
-    return this.groupService.listAllGroup(this.groupType).do(data => {
+    return this.groupService.listAllGroup(1).do(data => {
       this.groupLoading = false;
       this.clearDueTimers();
       this.groups = data;
@@ -107,14 +86,6 @@ export class GroupsPageComponent implements OnInit {
     });
   }
 
-  // 切换订单团类型
-  switchGroups(checked, type) {
-    if (checked) {
-      this.groupType = type;
-      this.listGroups().subscribe();
-    }
-  }
-
   // 清空 timer
   clearDueTimers() {
     if (this.dueTimers && this.dueTimers.length) {
@@ -129,9 +100,7 @@ export class GroupsPageComponent implements OnInit {
     this.dueTimers = [];
     this.groups.forEach(group => {
       // 已过期或者状态不是已征集的 push null ，不需要定时
-      if (!this.isGroupActive(group.id)) {
-        this.dueTimers.push(null);
-      } else if (this.isGroupExpired(group.id)) {
+      if (this.isGroupExpired(group.id)) {
         group.remainTime = -1;
         this.dueTimers.push(null);
       } else {
@@ -171,88 +140,13 @@ export class GroupsPageComponent implements OnInit {
   // 选择某个订单团
   selectGroup(groupId) {
     this.selectedGroup = this.groups.find(group => group.id === groupId);
-    this.listGroupDetail().subscribe(() => {
-      this.sideBlockStatus = 3;
-    });
-  }
-
-  // 跳转到创建订单团状态
-  openAddGroup() {
-    const today = new Date();
-    this.groupAddForm.patchValue({
-      dueTime: today,
-      groupName: Utils.formatDate(today) + ' 订饭'
-    });
-
-    this.sideBlockStatus = 2;
-  }
-
-  // 取消创建订单团
-  cancelAddGroup() {
-    this.groupAddForm.reset();
-    this.sideBlockStatus = 1;
-  }
-
-  disabledDate(current) {
-    return current && current.getTime() < Date.now();
-  }
-
-  // 退出特定订单团
-  exitGroup() {
-    this.selectedGroup = {};
-    this.sideBlockStatus = 1;
-  }
-
-  // 创建订单团
-  addGroup() {
-    console.log(this.groupAddForm.value);
-    const params = this.groupAddForm.value;
-    params.dueTime = Utils.formatDateTime(params.dueTime);
-
-    this.waitingResp = true;
-    this.groupService.addGroup(params).subscribe(data => {
-      this.listGroups().subscribe(() => {
-        this.selectGroup(data);
-        this.waitingResp = false;
-      });
-    });
-  }
-
-  // 当前用户是否是订单团的发起人
-  isGroupOnwer(groupId) {
-    if (this.groups.length === 0 || !groupId) {
-      return false;
-    }
-    return this.groups.find(g => g.id === groupId).composer_user_id === this.store.user.id;
+    this.listGroupDetail().subscribe();
   }
 
   // 订单团是否已过期
   isGroupExpired(groupId) {
-    if (this.groups.length === 0 || !groupId) {
-      return false;
-    }
     return new Date().getTime() -
       new Date(this.groups.find(g => g.id === groupId).due_time).getTime() > 0;
-  }
-
-  // 订单团是否为征集中状态
-  isGroupActive(groupId) {
-    if (this.groups.length === 0 || !groupId) {
-      return false;
-    }
-    return this.groups.find(g => g.id === groupId).status === 1;
-  }
-
-  // 改变团组状态
-  changeGroupStatus(status) {
-    this.waitingResp = true;
-    this.groupService.changeStatus(this.selectedGroup.id, status ? 3 : 2).subscribe(() => {
-      this.waitingResp = false;
-      this.nzNotificationService.success('成功', '修改成功');
-      this.sideBlockStatus = 1;
-      this.selectedGroup = {};
-      this.listGroups().subscribe();
-    });
   }
 
   // 打开订单确认
