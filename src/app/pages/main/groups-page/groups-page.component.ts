@@ -69,7 +69,7 @@ export class GroupsPageComponent implements OnInit {
   listGroups() {
     this.groupLoading = true;
     this.groups = [];
-    return this.groupService.listAllGroup(1).do(data => {
+    return this.groupService.listActiveGroup().do(data => {
       this.groupLoading = false;
       this.clearDueTimers();
       this.groups = data;

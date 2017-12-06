@@ -11,10 +11,28 @@ export class GroupService extends BaseService {
   }
 
   /**
-   * 获取所有订单团列表
+   * 获取所有征集中订单团列表
    */
-  listAllGroup(type) {
-    return this.get('/group/list?type=' + type).map(res => res.data);
+  listActiveGroup() {
+    return this.get('/group/listActive').map(res => res.data);
+  }
+
+  /**
+   * 分页获取我发起的订单团列表
+   * @param params
+   * @returns {OperatorFunction<T, R>}
+   */
+  listOwnerGroup(params) {
+    return this.post('/group/listOnwer', params).map(res => res.data);
+  }
+
+  /**
+   * 分页获取我参与的订单团列表
+   * @param params
+   * @returns {OperatorFunction<T, R>}
+   */
+  listMemberGroup(params) {
+    return this.post('/group/listMember', params).map(res => res.data);
   }
 
   /**

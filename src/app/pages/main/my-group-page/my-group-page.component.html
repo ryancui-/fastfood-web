@@ -1,0 +1,92 @@
+<div class="my-group-btns">
+  <button nz-button [nzType]="'primary'" (click)="openAddGroupDialog()">
+    <span>新建订单团</span>
+  </button>
+
+  <div>
+    <nz-checkable-tag [nzChecked]="groupType === 1" (nzChange)="switchGroupType($event, 1)">
+      我发起的
+    </nz-checkable-tag>
+    <nz-checkable-tag [nzChecked]="groupType === 2" (nzChange)="switchGroupType($event, 2)">
+      我参与的
+    </nz-checkable-tag>
+  </div>
+</div>
+
+<nz-table #nzTable
+          [nzSize]="'small'"
+          [nzAjaxData]="groups"
+          [nzShowSizeChanger]="true"
+          [nzLoading]="tableLoading"
+          [nzTotal]="total"
+          [(nzPageIndex)]="page"
+          (nzPageIndexChange)="refreshGroupData()"
+          [(nzPageSize)]="rows"
+          (nzPageSizeChange)="refreshGroupData()">
+  <thead nz-thead>
+  <tr>
+    <th nz-th [nzExpand]="true"></th>
+    <th nz-th><span>发起人</span></th>
+    <th nz-th><span>订单团名称</span></th>
+    <th nz-th><span>总价</span></th>
+    <th nz-th><span>状态</span></th>
+    <th nz-th *ngIf="groupType === 1"><span>操作</span></th>
+  </tr>
+  </thead>
+  <tbody nz-tbody>
+  <ng-template ngFor let-data [ngForOf]="nzTable.data">
+    <tr nz-tbody-tr>
+      <td nz-td [nzExpand]="true">
+        <nz-row-expand-icon [(nzExpand)]="data.expand"></nz-row-expand-icon>
+      </td>
+      <td nz-td>{{data.composer?.username}}</td>
+      <td nz-td>{{data.name}}</td>
+      <td nz-td>￥{{data.totalPrice}}</td>
+      <td nz-td>
+        <nz-tag [nzColor]="'green'" *ngIf="data.status === 1">征集中</nz-tag>
+        <nz-tag [nzColor]="'red'" *ngIf="data.status === 3">未点餐</nz-tag>
+        <nz-tag [nzColor]="'blue'" *ngIf="data.status === 2">已点餐</nz-tag>
+      </td>
+      <td nz-td *ngIf="groupType === 1">
+        <span>
+          <a [class.link-disabled]="data.status !== 1"
+             (click)="changeGroupStatus(data, true)">确认点餐</a>
+          <span nz-table-divider></span>
+          <a [class.link-disabled]="data.status !== 1"
+             (click)="changeGroupStatus(data, false)">取消订餐</a>
+        </span>
+      </td>
+    </tr>
+    <tr nz-tbody-tr *ngIf="data.expand">
+      <td nz-td></td>
+      <td nz-td colspan="4">
+        <div *ngIf="data.orders.length === 0">无订单</div>
+        <div *ngFor="let order of data.orders"
+             class="order-group"
+             [class.my-order]="order.user_id === store.user.id">
+          <span style="width: 140px;">{{order.user?.username}}</span>
+          <span style="width: 200px;">{{order.product_name}}</span>
+          <span style="width: 70px;">{{order.quantity}} 份</span>
+          <span style="width: 70px;">￥{{order.total_price}}</span>
+        </div>
+      </td>
+    </tr>
+  </ng-template>
+  </tbody>
+</nz-table>
+
+<ng-template #addGroupDialog>
+  <form nz-form [formGroup]="groupAddForm" (ngSubmit)="addGroup()">
+    <div nz-form-item>
+      <div nz-form-control [nzValidateStatus]="groupAddForm.get('groupName')">
+        <nz-input formControlName="groupName" [nzPlaceHolder]="'团组名称'" [nzSize]="'large'">
+        </nz-input>
+      </div>
+    </div>
+    <div nz-form-item>
+      <div nz-form-control [nzValidateStatus]="groupAddForm.get('dueTime')">
+        <nz-timepicker [nzSize]="'large'" formControlName="dueTime" [nzFormat]="'HH:mm'"></nz-timepicker>
+      </div>
+    </div>
+  </form>
+</ng-template>

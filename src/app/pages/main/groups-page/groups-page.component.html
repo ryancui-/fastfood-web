@@ -1,35 +1,36 @@
 <div class="main">
   <div class="group-block">
     <!-- 订单团列表 -->
-    <div class="block-title">订单团</div>
-    <nz-spin *ngIf="groupLoading" [nzTip]="'正在读取订单团...'" style="text-align: center;"></nz-spin>
-    <div *ngIf="!groupLoading && groups.length === 0" class="groups-none">
-      不存在的
-    </div>
-    <ng-template ngFor let-group [ngForOf]="groups">
-      <div class="group-item item-hover"
-           [class.item-selected]="group.id === selectedGroup.id"
-           (click)="selectGroup(group.id)">
-        <div class="group-item-info">
-          <div class="group-item-info-line">
-            <nz-avatar nzSize="small" nzIcon="user" [nzSrc]="group.composer?.avatar_url || ''"></nz-avatar>
-            <span style="margin-left: 10px;flex: 1;">{{group.composer?.username}}</span>
-            <span *ngIf="selectedGroup.id && selectedGroup.id === group.id"
-                  class="price">￥{{selectedGroup.totalPrice}}</span>
-          </div>
-          <div class="group-item-info-line">
-            <span class="group-item-name">{{group.name}}</span>
-          </div>
-          <div class="group-item-info-line">
-            <nz-tag [nzColor]="'green'">征集中</nz-tag>
-            <span>{{formatRemainTime(group.remainTime)}}</span>
-          </div>
-        </div>
-        <div class="group-item-arrow">
-          <i class="anticon anticon-right"></i>
-        </div>
+    <div>
+      <div class="block-title">订单团</div>
+      <nz-spin *ngIf="groupLoading" [nzTip]="'正在读取订单团...'" style="text-align: center;"></nz-spin>
+      <div *ngIf="!groupLoading && groups.length === 0" class="groups-none">
+        不存在的
       </div>
-    </ng-template>
+      <ng-template ngFor let-group [ngForOf]="groups">
+        <div class="group-item item-hover"
+             [class.item-selected]="group.id === selectedGroup.id"
+             (click)="selectGroup(group.id)">
+          <div class="group-item-info">
+            <div class="group-item-info-line">
+              <nz-avatar nzSize="small" nzIcon="user" [nzSrc]="group.composer?.avatar_url || ''"></nz-avatar>
+              <span style="margin-left: 10px;flex: 1;">{{group.composer?.username}}</span>
+              <span *ngIf="selectedGroup.id && selectedGroup.id === group.id" class="price">￥{{selectedGroup.totalPrice}}</span>
+            </div>
+            <div class="group-item-info-line">
+              <span class="group-item-name">{{group.name}}</span>
+            </div>
+            <div class="group-item-info-line">
+              <nz-tag [nzColor]="'green'">征集中</nz-tag>
+              <span>{{formatRemainTime(group.remainTime)}}</span>
+            </div>
+          </div>
+          <div class="group-item-arrow">
+            <i class="anticon anticon-right"></i>
+          </div>
+        </div>
+      </ng-template>
+    </div>
   </div>
 
   <div class="order-block">
@@ -55,7 +56,7 @@
               </a>
             </div>
             <span class="order-name">{{row.product_name}}</span>
-            <span class="order-quantity">{{row.quantity}}</span>
+            <span class="order-quantity">× {{row.quantity}}</span>
           </div>
           <div *ngIf="row.remark" class="order-remark">
             <span>{{row.remark}}</span>

@@ -1,0 +1,21 @@
+.my-group-btns {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 10px;
+}
+
+.link-disabled {
+  color: grey;
+  cursor: not-allowed;
+}
+
+.order-group {
+  display: flex;
+  align-items: center;
+  padding: 5px 0;
+}
+
+.my-order {
+  color: red;
+}

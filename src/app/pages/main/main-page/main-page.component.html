@@ -3,6 +3,7 @@
     <div class="logo"></div>
     <ul nz-menu [nzTheme]="'dark'" [nzMode]="'horizontal'" style="line-height: 64px;">
       <li nz-menu-item routerLink="/groups" [nzSelected]="store.url === '/groups'" style="outline: none;">点餐</li>
+      <li nz-menu-item routerLink="/my_group" [nzSelected]="store.url === '/my_group'" style="outline: none;">我的订单团</li>
       <li nz-menu-item routerLink="/products"
           *ngIf="store.user?.is_admin"
           [nzSelected]="store.url === '/products'"

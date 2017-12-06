@@ -11,6 +11,7 @@ import {ProductService} from './product.service';
 import {GroupService} from './group.service';
 import {OrderService} from './order.service';
 import {CardMenuComponent} from './card-menu/card-menu.component';
+import {MyGroupPageComponent} from './my-group-page/my-group-page.component';
 
 @NgModule({
   imports: [
@@ -23,7 +24,7 @@ import {CardMenuComponent} from './card-menu/card-menu.component';
   providers: [
     ProductService, GroupService, OrderService
   ],
-  declarations: [GroupsPageComponent, ProductsPageComponent, MainPageComponent, CardMenuComponent]
+  declarations: [GroupsPageComponent, ProductsPageComponent, MainPageComponent, CardMenuComponent, MyGroupPageComponent]
 })
 export class MainModule {
 }
