@@ -26,24 +26,9 @@ export class GroupsPageComponent implements OnInit {
   // 3 - 显示订单团详情
   sideBlockStatus = 1;
 
-  // 菜单表格
-  products = [];
-  total = 0;
-  page = 1;
-  tableLoading = false;
-  condition: any = {};
-  categoryOptions = [
-    '每旬菜式',
-    '热销菜式',
-    '明炉烧味',
-    '滋补炖品',
-    '天天靓汤',
-    '港式粉面',
-    '冷热饮品',
-    '原盅蒸饭'
-  ];
-
   selectedProduct;
+
+  products = [];
 
   // 订单团
   groups;
@@ -87,38 +72,14 @@ export class GroupsPageComponent implements OnInit {
       remark: ''
     });
 
-    this.listTodayProduct('reload');
-
     this.listGroups().subscribe(() => {
       const groupId = Number(this.activatedRoute.snapshot.queryParamMap.get('id'));
       if (groupId && this.groups.map(g => g.id).includes(groupId)) {
         this.selectGroup(groupId);
       }
     });
-  }
 
-  // 列出当天菜式
-  listTodayProduct(operation) {
-    switch (operation) {
-      case 'refresh':
-        break;
-      case 'reload':
-        this.page = 1;
-        break;
-    }
-
-    const query: any = {
-      page: this.page
-    };
-
-    if (this.condition.category) {
-      query.category = this.condition.category;
-    }
-
-    this.tableLoading = true;
-    this.productService.listPerday(query).subscribe(data => {
-      this.tableLoading = false;
-      this.total = data.total;
+    this.productService.listPerday({}).subscribe(data => {
       this.products = data.rows;
     });
   }
