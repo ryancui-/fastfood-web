@@ -1,7 +1,7 @@
 import {Component} from '@angular/core';
 import {NavigationEnd, Router} from '@angular/router';
 import 'rxjs/add/operator/filter';
-import {Store} from './store';
+import {Store} from './store/store';
 
 @Component({
   selector: 'app-root',
@@ -14,7 +14,11 @@ export class AppComponent {
     this.router.events.filter(e => {
       return e instanceof NavigationEnd;
     }).subscribe((e: NavigationEnd) => {
-      this.store.url = e.urlAfterRedirects;
+      if (e.urlAfterRedirects.indexOf('?') === -1) {
+        this.store.url = e.urlAfterRedirects;
+      } else {
+        this.store.url = e.urlAfterRedirects.substring(0, e.urlAfterRedirects.indexOf('?'));
+      }
     });
   }
 }

@@ -7,7 +7,7 @@ import {NgZorroAntdModule} from 'ng-zorro-antd';
 import {AppComponent} from './app.component';
 import {AppRoutingModule} from './app-routing.module';
 import {NeedLoginGuard} from './need-login.guard';
-import {Store} from './store';
+import {Store} from './store/store';
 import {HttpClientModule} from '@angular/common/http';
 import {AuthService} from './auth.service';
 import {NeedAdminGuard} from './need-admin.guard';

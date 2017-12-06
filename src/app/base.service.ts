@@ -1,10 +1,11 @@
 import {environment} from '../environments/environment';
 import {HttpClient, HttpHeaders} from '@angular/common/http';
 import {Observable} from 'rxjs/Observable';
+import {Store} from './store/store';
 
 export class BaseService {
 
-  constructor(protected httpClient: HttpClient) {
+  constructor(protected httpClient: HttpClient, protected store: Store) {
   }
 
   protected apiHost = environment.apiHost;
@@ -12,7 +13,7 @@ export class BaseService {
   get(url: string): Observable<any> {
     return this.httpClient.get(this.apiHost + url, {
       headers: new HttpHeaders({
-        authorization: localStorage.getItem('token')
+        authorization: this.store.token
       })
     });
   }
@@ -20,7 +21,7 @@ export class BaseService {
   post(url: string, data: any): Observable<any> {
     return this.httpClient.post(this.apiHost + url, data, {
       headers: new HttpHeaders({
-        authorization: localStorage.getItem('token')
+        authorization: this.store.token
       })
     });
   }

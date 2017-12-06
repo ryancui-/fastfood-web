@@ -1,12 +1,13 @@
 import {Injectable} from '@angular/core';
 import {BaseService} from '../../base.service';
 import {HttpClient} from '@angular/common/http';
+import {Store} from '../../store/store';
 
 @Injectable()
 export class GroupService extends BaseService {
 
-  constructor(private hc: HttpClient) {
-    super(hc);
+  constructor(private hc: HttpClient, private s: Store) {
+    super(hc, s);
   }
 
   /**

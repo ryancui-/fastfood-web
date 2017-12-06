@@ -12,4 +12,9 @@ export class Store {
     '冷热饮品',
     '原盅蒸饭'
   ];
+
+  user;
+  token;
+
+  url;
 }

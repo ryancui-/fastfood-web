@@ -1,7 +1,7 @@
 import {Component, OnInit} from '@angular/core';
 import {AuthService} from '../../../auth.service';
 import {Router} from '@angular/router';
-import {Store} from '../../../store';
+import {Store} from '../../../store/store';
 
 @Component({
   selector: 'main-page',

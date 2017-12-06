@@ -11,7 +11,6 @@ import {ProductService} from './product.service';
 import {GroupService} from './group.service';
 import {OrderService} from './order.service';
 import {CardMenuComponent} from './card-menu/card-menu.component';
-import {Store} from '../../store/store';
 
 @NgModule({
   imports: [
@@ -22,7 +21,7 @@ import {Store} from '../../store/store';
     NgZorroAntdModule
   ],
   providers: [
-    ProductService, GroupService, OrderService, Store
+    ProductService, GroupService, OrderService
   ],
   declarations: [GroupsPageComponent, ProductsPageComponent, MainPageComponent, CardMenuComponent]
 })

@@ -4,15 +4,15 @@ import 'rxjs/add/operator/map';
 import {Observable} from 'rxjs/Observable';
 import {NzNotificationService} from 'ng-zorro-antd';
 import {BaseService} from './base.service';
-import {Store} from './store';
+import {Store} from './store/store';
 
 @Injectable()
 export class AuthService extends BaseService {
 
   constructor(private hc: HttpClient,
-              private store: Store,
+              private s: Store,
               private notificationService: NzNotificationService) {
-    super(hc);
+    super(hc, s);
   }
 
   /**
@@ -28,6 +28,7 @@ export class AuthService extends BaseService {
       console.log(res);
       if (res.errno === 0) {
         this.store.user = res.data.userInfo;
+        this.store.token = res.data.token;
         localStorage.setItem('token', res.data.token);
         localStorage.setItem('user', JSON.stringify(res.data.userInfo));
         return true;
@@ -43,7 +44,8 @@ export class AuthService extends BaseService {
    */
   logout(): Observable<boolean> {
     return Observable.create(observable => {
-      this.store.user = null;
+      this.store.user = {};
+      this.store.token = '';
       localStorage.removeItem('token');
       localStorage.removeItem('user');
       observable.next(true);

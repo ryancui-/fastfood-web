@@ -1,7 +1,7 @@
 import {Injectable} from '@angular/core';
 import {ActivatedRouteSnapshot, CanActivate, Router, RouterStateSnapshot} from '@angular/router';
 import {Observable} from 'rxjs/Observable';
-import {Store} from './store';
+import {Store} from './store/store';
 
 @Injectable()
 export class NeedLoginGuard implements CanActivate {
@@ -17,6 +17,7 @@ export class NeedLoginGuard implements CanActivate {
       // 设置全局变量
       if (!this.store.user) {
         this.store.user = JSON.parse(localStorage.getItem('user'));
+        this.store.token = token;
       }
       return true;
     } else {

@@ -7,7 +7,7 @@ import {NzMessageService, NzModalService, NzNotificationService} from 'ng-zorro-
 import {OrderService} from '../order.service';
 
 import 'rxjs/add/operator/do';
-import {Store} from '../../../store';
+import {Store} from '../../../store/store';
 import {ActivatedRoute} from '@angular/router';
 
 @Component({
