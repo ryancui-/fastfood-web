@@ -76,6 +76,8 @@ export class GroupsPageComponent implements OnInit {
       const groupId = Number(this.activatedRoute.snapshot.queryParamMap.get('id'));
       if (groupId && this.groups.map(g => g.id).includes(groupId)) {
         this.selectGroup(groupId);
+      } else if (this.groups.length > 0) {
+        this.selectGroup(this.groups[0].id);
       }
     });
 
@@ -168,12 +170,10 @@ export class GroupsPageComponent implements OnInit {
 
   // 选择某个订单团
   selectGroup(groupId) {
-    if (this.sideBlockStatus !== 3) {
-      this.selectedGroup = this.groups.find(group => group.id === groupId);
-      this.listGroupDetail().subscribe(() => {
-        this.sideBlockStatus = 3;
-      });
-    }
+    this.selectedGroup = this.groups.find(group => group.id === groupId);
+    this.listGroupDetail().subscribe(() => {
+      this.sideBlockStatus = 3;
+    });
   }
 
   // 跳转到创建订单团状态
