@@ -11,7 +11,8 @@
               (click)="addGroup()">保存
       </button>
 
-      <nz-button-group *ngIf="sideBlockStatus === 3 && isGroupOnwer(groupId) && isGroupActive(groupId)">
+      <nz-button-group
+        *ngIf="sideBlockStatus === 3 && isGroupOnwer(selectedGroup.id) && isGroupActive(selectedGroup.id)">
         <button nz-button (click)="changeGroupStatus(false)"
                 [nzLoading]="waitingResp">
           <span>完成</span>
@@ -64,14 +65,14 @@
       <ng-template ngFor let-group [ngForOf]="groups">
         <div class="group-item"
              [class.item-hover]="sideBlockStatus === 1"
-             [class.item-selected]="group.id === groupId"
-             *ngIf="sideBlockStatus === 1 || group.id === groupId"
+             [class.item-selected]="group.id === selectedGroup.id"
+             *ngIf="sideBlockStatus === 1 || group.id === selectedGroup.id"
              (click)="selectGroup(group.id)">
           <div class="group-item-info">
             <div class="group-item-info-line">
               <nz-avatar nzSize="small" nzIcon="user" [nzSrc]="group.composer?.avatar_url || ''"></nz-avatar>
               <span style="margin-left: 10px;flex: 1;">{{group.composer?.username}}</span>
-              <span class="price">￥{{group.totalPrice}}</span>
+              <span *ngIf="selectedGroup.id" class="price">￥{{selectedGroup.totalPrice}}</span>
             </div>
             <div class="group-item-info-line">
               <span class="group-item-name">{{group.name}}</span>
@@ -95,6 +96,7 @@
       <div class="orders-title">
         订单列表
       </div>
+      <nz-spin *ngIf="orderLoading" [nzTip]="'正在读取数据...'" style="text-align: center;"></nz-spin>
       <div *ngIf="orders.length === 0" class="orders-none">
         不存在的
       </div>
@@ -108,7 +110,8 @@
           <ng-template ngFor let-row [ngForOf]="order.rows">
             <div class="order-item-line">
               <div class="order-remove">
-                <a *ngIf="isGroupActive(groupId) && order.user.id === store.user?.id" (click)="removeOrder(row.id)">
+                <a *ngIf="isGroupActive(selectedGroup.id) && order.user.id === store.user?.id"
+                   (click)="removeOrder(row.id)">
                   <i class="anticon anticon-close"></i>
                 </a>
               </div>
@@ -135,7 +138,9 @@
                   [nzLoading]="tableLoading">
           <thead nz-thead>
           <tr>
-            <th nz-th nzWidth="40%"><span>菜单名</span></th>
+            <th nz-th nzWidth="40%">
+              <span>菜单名</span>
+            </th>
             <th nz-th nzWidth="20%">
               <span>类别</span>
               <nz-dropdown>
@@ -153,7 +158,8 @@
               </nz-dropdown>
             </th>
             <th nz-th nzWidth="20%"><span>价格</span></th>
-            <th nz-th nzWidth="20%" *ngIf="groupId && (isGroupOnwer(groupId) || !isGroupExpired(groupId))">
+            <th nz-th nzWidth="20%"
+                *ngIf="selectedGroup && isGroupActive(selectedGroup.id) && (isGroupOnwer(selectedGroup.id) || !isGroupExpired(selectedGroup.id))">
               <span>操作</span>
             </th>
           </tr>
@@ -168,7 +174,7 @@
             <td nz-td nzWidth="20%">{{data.category}}</td>
             <td nz-td nzWidth="20%">{{data.price}}</td>
             <td nz-td nzWidth="20%"
-                *ngIf="groupId && isGroupActive(groupId) && (isGroupOnwer(groupId) || !isGroupExpired(groupId))">
+                *ngIf="selectedGroup && isGroupActive(selectedGroup.id) && (isGroupOnwer(selectedGroup.id) || !isGroupExpired(selectedGroup.id))">
               <a (click)="openOrderConfirm(data)">点餐</a>
             </td>
           </tr>
@@ -179,7 +185,7 @@
         <ng-template #nzTabHeading>
           内容式菜单
         </ng-template>
-        敬请期待！
+        <card-menu [data]="products" (productSelect)="openOrderConfirm($event)"></card-menu>
       </nz-tab>
     </nz-tabset>
   </div>

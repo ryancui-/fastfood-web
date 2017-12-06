@@ -1,0 +1,14 @@
+<div class="category-group" *ngFor="let option of store.categoryOptions">
+  <h3>{{option}}</h3>
+  <div nz-row class="group">
+    <div nz-col [nzSpan]="12" class="menu-item"
+         *ngFor="let menu of filterByCategory(option)"
+         (click)="selectMenu(menu)">
+      <div class="menu-name">
+        {{menu.name}}
+        <span *ngIf="menu.spicy">🌶</span>
+      </div>
+      <span class="menu-price">￥{{menu.price}}</span>
+    </div>
+  </div>
+</div>

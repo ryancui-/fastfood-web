@@ -10,6 +10,8 @@ import {FormsModule, ReactiveFormsModule} from '@angular/forms';
 import {ProductService} from './product.service';
 import {GroupService} from './group.service';
 import {OrderService} from './order.service';
+import {CardMenuComponent} from './card-menu/card-menu.component';
+import {Store} from '../../store/store';
 
 @NgModule({
   imports: [
@@ -20,9 +22,9 @@ import {OrderService} from './order.service';
     NgZorroAntdModule
   ],
   providers: [
-    ProductService, GroupService, OrderService
+    ProductService, GroupService, OrderService, Store
   ],
-  declarations: [GroupsPageComponent, ProductsPageComponent, MainPageComponent]
+  declarations: [GroupsPageComponent, ProductsPageComponent, MainPageComponent, CardMenuComponent]
 })
 export class MainModule {
 }

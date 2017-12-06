@@ -8,6 +8,7 @@ import {OrderService} from '../order.service';
 
 import 'rxjs/add/operator/do';
 import {Store} from '../../../store';
+import {ActivatedRoute} from '@angular/router';
 
 @Component({
   selector: 'app-groups-page',
@@ -31,7 +32,17 @@ export class GroupsPageComponent implements OnInit {
   page = 1;
   tableLoading = false;
   condition: any = {};
-  categoryOptions = [];
+  categoryOptions = [
+    '每旬菜式',
+    '热销菜式',
+    '明炉烧味',
+    '滋补炖品',
+    '天天靓汤',
+    '港式粉面',
+    '冷热饮品',
+    '原盅蒸饭'
+  ];
+
   selectedProduct;
 
   // 订单团
@@ -44,8 +55,9 @@ export class GroupsPageComponent implements OnInit {
   groupAddForm: FormGroup;
 
   // 选择订单团
-  groupId;
+  selectedGroup: any = {};
   orders;
+  orderLoading = false;
 
   @ViewChild('order_dialog') orderDialog;
   orderDialogInst;
@@ -57,6 +69,7 @@ export class GroupsPageComponent implements OnInit {
               private orderService: OrderService,
               private formBuilder: FormBuilder,
               private msgService: NzMessageService,
+              private activatedRoute: ActivatedRoute,
               private nzNotificationService: NzNotificationService,
               private modalService: NzModalService,
               private groupService: GroupService,
@@ -74,13 +87,14 @@ export class GroupsPageComponent implements OnInit {
       remark: ''
     });
 
-    this.productService.listCategories().subscribe(data => {
-      this.categoryOptions = data;
-    });
-
     this.listTodayProduct('reload');
 
-    this.listGroups().subscribe();
+    this.listGroups().subscribe(() => {
+      const groupId = Number(this.activatedRoute.snapshot.queryParamMap.get('id'));
+      if (groupId && this.groups.map(g => g.id).includes(groupId)) {
+        this.selectGroup(groupId);
+      }
+    });
   }
 
   // 列出当天菜式
@@ -117,14 +131,16 @@ export class GroupsPageComponent implements OnInit {
       this.groupLoading = false;
       this.clearDueTimers();
       this.groups = data;
-
-      for (let i = 0; i < this.groups.length; i++) {
-        const orders = this.groups[i].orders;
-        this.groups[i].totalPrice =
-          orders.map(o => o.total_price).reduce((p, c) => p + c, 0);
-      }
-
       this.initDueTimers();
+    });
+  }
+
+  // 加载团组详情
+  listGroupDetail() {
+    this.orderLoading = true;
+    return this.groupService.getGroupDetail(this.selectedGroup.id).do(data => {
+      this.orderLoading = false;
+      this.orders = this.initOrders(data.orders);
     });
   }
 
@@ -192,15 +208,10 @@ export class GroupsPageComponent implements OnInit {
   // 选择某个订单团
   selectGroup(groupId) {
     if (this.sideBlockStatus !== 3) {
-      this.groupId = groupId;
-      this.orders = this.initOrders(this.groups.find(group => group.id === groupId).orders);
-      console.log(this.orders);
-      this.sideBlockStatus = 3;
-
-      // 不在征集中 tab 进入
-      if (this.isGroupActive(groupId) && this.groupType !== 1) {
-        this.switchGroups(true, 1);
-      }
+      this.selectedGroup = this.groups.find(group => group.id === groupId);
+      this.listGroupDetail().subscribe(() => {
+        this.sideBlockStatus = 3;
+      });
     }
   }
 
@@ -227,7 +238,7 @@ export class GroupsPageComponent implements OnInit {
 
   // 退出特定订单团
   exitGroup() {
-    this.groupId = null;
+    this.selectedGroup = {};
     this.sideBlockStatus = 1;
   }
 
@@ -274,18 +285,21 @@ export class GroupsPageComponent implements OnInit {
   // 改变团组状态
   changeGroupStatus(status) {
     this.waitingResp = true;
-    this.groupService.changeStatus(this.groupId, status ? 3 : 2).subscribe(() => {
+    this.groupService.changeStatus(this.selectedGroup.id, status ? 3 : 2).subscribe(() => {
       this.waitingResp = false;
       this.nzNotificationService.success('成功', '修改成功');
       this.sideBlockStatus = 1;
-      this.listGroups().subscribe(() => {
-        this.groupId = null;
-      });
+      this.selectedGroup = {};
+      this.listGroups().subscribe();
     });
   }
 
   // 打开订单确认
   openOrderConfirm(product) {
+    if (!this.selectedGroup.id) {
+      return;
+    }
+
     this.selectedProduct = product;
     this.orderAddForm.patchValue({
       quantity: 1,
@@ -305,29 +319,23 @@ export class GroupsPageComponent implements OnInit {
   // 添加订单
   addOrder() {
     const params = {
-      groupId: this.groupId,
+      groupId: this.selectedGroup.id,
       productId: this.selectedProduct.id,
       quantity: this.orderAddForm.get('quantity').value,
       remark: this.orderAddForm.get('remark').value
     };
 
-    return this.orderService.addOrderToGroup(params).map(() => {
-      this.listGroups().subscribe(() => {
-        this.orders = this.initOrders(this.groups.find(group => group.id === this.groupId).orders);
-      });
-      return true;
-    });
+    return this.orderService.addOrderToGroup(params).flatMap(() => this.listGroupDetail().map(data => true));
   }
 
   // 删除订单
   removeOrder(orderId) {
     const msgId = this.msgService.loading('正在删除订单...').messageId;
+
     this.orderService.deleteOrder(orderId).subscribe(() => {
       this.msgService.remove(msgId);
       this.nzNotificationService.success('成功', '删除成功');
-      this.listGroups().subscribe(() => {
-        this.orders = this.initOrders(this.groups.find(group => group.id === this.groupId).orders);
-      });
+      this.listGroupDetail().subscribe();
     });
   }
 
@@ -351,6 +359,11 @@ export class GroupsPageComponent implements OnInit {
     for (let i = 0; i < result.length; i++) {
       const rows = result[i].rows;
       result[i].totalPrice = rows.map(r => r.total_price).reduce((p, c) => p + c, 0);
+    }
+
+    // 计算订单团总价
+    if (this.selectedGroup.id) {
+      this.selectedGroup.totalPrice = orders.map(o => o.total_price).reduce((p, c) => p + c, 0);
     }
 
     return result;
