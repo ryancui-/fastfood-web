@@ -59,7 +59,7 @@
     </tr>
     <tr nz-tbody-tr *ngIf="data.expand">
       <td nz-td></td>
-      <td nz-td colspan="4">
+      <td nz-td [attr.colspan]="groupType === 1 ? 5 : 4">
         <div *ngIf="data.orders.length === 0">无订单</div>
         <div *ngFor="let order of data.orders"
              class="order-group"

@@ -68,6 +68,9 @@ export class MyGroupPageComponent implements OnInit {
     }).do(data => {
       this.tableLoading = false;
       this.groups = data.rows;
+      this.groups.forEach(group => {
+        group.totalPrice = group.orders.map(o => o.total_price).reduce((p, c) => p + c, 0);
+      });
       this.total = data.total;
     });
   }
