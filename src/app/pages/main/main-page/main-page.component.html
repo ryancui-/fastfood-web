@@ -4,13 +4,18 @@
     <ul nz-menu [nzTheme]="'dark'" [nzMode]="'horizontal'" style="line-height: 64px;">
       <li nz-menu-item routerLink="/groups" [nzSelected]="store.url === '/groups'" style="outline: none;">点餐</li>
       <li nz-menu-item routerLink="/my_group" [nzSelected]="store.url === '/my_group'" style="outline: none;">我的订单团</li>
+      <li nz-menu-item routerLink="/profile" [nzSelected]="store.url === '/profile'" style="outline: none;">个人中心</li>
       <li nz-menu-item routerLink="/products"
           *ngIf="store.user?.is_admin"
           [nzSelected]="store.url === '/products'"
           style="outline: none;">菜单
       </li>
       <li nz-submenu style="float: right;">
-        <span title><i class="anticon anticon-user"></i>{{store.user?.username}}</span>
+        <div title class="header-name">
+          <nz-avatar nzSize="small" nzIcon="user" [nzSrc]="store.user?.avatar_url || ''"
+                     class="avatar-in-submenu"></nz-avatar>
+          <span>{{store.user?.username}}</span>
+        </div>
         <ul>
           <li nz-menu-item (click)="logout()">退出</li>
         </ul>
