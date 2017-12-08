@@ -1,3 +1,54 @@
-<p>
-  profile-page works!
-</p>
+<div style="margin-bottom: 10px;">
+  <button nz-button
+          *ngIf="!isEdit"
+          nzType="primary"
+          (click)="isEdit = true;">编辑
+  </button>
+  <button nz-button
+          *ngIf="isEdit"
+          (click)="isEdit = false">返回
+  </button>
+  <button nz-button
+          *ngIf="isEdit"
+          (click)="save()">保存
+  </button>
+</div>
+
+<div class="profile-line">
+  <label for="username" class="profile-line-label">用户名：</label>
+  <span *ngIf="!isEdit">{{store.user?.username}}</span>
+  <div *ngIf="isEdit">
+    <nz-input [(ngModel)]="username"
+              style="width: 180px;"></nz-input>
+  </div>
+</div>
+
+<div class="profile-line">
+  <label for="gender" class="profile-line-label">性别：</label>
+  <span *ngIf="!isEdit">{{formatGender(store.user?.gender)}}</span>
+  <div *ngIf="isEdit">
+    <nz-checkable-tag [nzChecked]="gender === 1"
+                      (nzChange)="gender = 1;">
+      <i class="anticon anticon-man"></i>
+      男仔
+    </nz-checkable-tag>
+    <nz-checkable-tag [nzChecked]="gender === 2"
+                      (nzChange)="gender = 2;">
+      <i class="anticon anticon-woman"></i>
+      女仔
+    </nz-checkable-tag>
+  </div>
+</div>
+
+<div class="profile-line">
+  <label for="gender" class="profile-line-label">头像：</label>
+  <nz-avatar nzIcon="user"
+             style="margin-right: 10px;"
+             [nzSrc]="store.user?.avatar_url || ''"></nz-avatar>
+  <button nz-button nzSize="small"
+          [nzLoading]="uploadAvatarLoading"
+          (click)="fileInput.click()">{{uploadAvatarLoading ? '正在上传' : '上传头像'}}
+  </button>
+</div>
+
+<input #fileInput type="file" style="display: none;" name="avatar" (change)="uploadAvatar($event)">

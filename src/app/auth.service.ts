@@ -30,7 +30,6 @@ export class AuthService extends BaseService {
         this.store.user = res.data.userInfo;
         this.store.token = res.data.token;
         localStorage.setItem('token', res.data.token);
-        localStorage.setItem('user', JSON.stringify(res.data.userInfo));
         return true;
       } else {
         this.notificationService.error('错误', res.errmsg);
@@ -47,18 +46,7 @@ export class AuthService extends BaseService {
       this.store.user = {};
       this.store.token = '';
       localStorage.removeItem('token');
-      localStorage.removeItem('user');
       observable.next(true);
-    });
-  }
-
-  /**
-   * 检查用户名是否合法
-   * @param username
-   */
-  checkUsername(username: string) {
-    return this.httpClient.post(this.apiHost + '/auth/checkUsername', {
-      username
     });
   }
 
@@ -70,5 +58,39 @@ export class AuthService extends BaseService {
    */
   register(query) {
     return this.httpClient.post(this.apiHost + '/auth/register', query);
+  }
+
+  /**
+   * 获取已登录用户信息
+   */
+  profile() {
+    return this.get('/profile').do(({errno, data}) => {
+      if (errno === 0) {
+        // 更新本地的用户信息
+        this.store.user = data;
+      }
+    });
+  }
+
+  /**
+   * 修改用户信息
+   * @param params
+   */
+  modifyProfile(params) {
+    return this.post('/profile/modify', params).flatMap(() => {
+      return this.profile();
+    });
+  }
+
+  /**
+   * 上传用户头像
+   * @param file
+   */
+  uploadAvatar(file: File) {
+    const formData = new FormData();
+    formData.append('avatar', file);
+    return this.post('/profile/uploadAvatar', formData).flatMap(() => {
+      return this.profile();
+    });
   }
 }

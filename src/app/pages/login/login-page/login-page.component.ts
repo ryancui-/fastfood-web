@@ -1,10 +1,9 @@
 import {Component, OnInit} from '@angular/core';
 import {Router} from '@angular/router';
 import {Md5} from 'ts-md5/dist/md5';
-import {AbstractControl, FormBuilder, FormGroup, ValidationErrors, Validators} from '@angular/forms';
+import {FormBuilder, FormGroup, Validators} from '@angular/forms';
 import {animate, state, style, transition, trigger} from '@angular/animations';
 import {AuthService} from '../../../auth.service';
-import {Observable} from 'rxjs/Observable';
 import {NzNotificationService} from 'ng-zorro-antd';
 
 @Component({
@@ -102,20 +101,6 @@ export class LoginPageComponent implements OnInit {
         this.switchTab();
       } else {
         this.notificationService.error('Oops', res.errmsg);
-      }
-    });
-  }
-
-  // 检查用户名
-  checkUsername(control: AbstractControl): Observable<ValidationErrors | null> {
-    const username = control.value;
-
-    return this.authService.checkUsername(username).map((res: any) => {
-      switch (res.errno) {
-        case 12001:
-          return {error: true, has_one: true};
-        default:
-          return null;
       }
     });
   }
