@@ -128,4 +128,29 @@ export class MyGroupPageComponent implements OnInit {
       this.refreshGroupData(true);
     });
   }
+
+  // 转换 orders，按 user 归类
+  initOrders(orders) {
+    const result = [];
+    orders.forEach(order => {
+      let obj = result.find(r => r.user.id === order.user_id);
+      if (!obj) {
+        obj = {
+          user: order.user,
+          rows: []
+        };
+        result.push(obj);
+      }
+
+      obj.rows.push(order);
+    });
+
+    // 计算每个人的总价
+    for (let i = 0; i < result.length; i++) {
+      const rows = result[i].rows;
+      result[i].totalPrice = rows.map(r => r.total_price).reduce((p, c) => p + c, 0);
+    }
+
+    return result;
+  }
 }

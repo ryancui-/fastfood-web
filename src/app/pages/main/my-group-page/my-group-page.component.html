@@ -61,13 +61,19 @@
       <td nz-td></td>
       <td nz-td [attr.colspan]="groupType === 1 ? 5 : 4">
         <div *ngIf="data.orders.length === 0">无订单</div>
-        <div *ngFor="let order of data.orders"
-             class="order-group"
-             [class.my-order]="order.user_id === store.user.id">
-          <span style="width: 140px;">{{order.user?.username}}</span>
-          <span style="width: 200px;">{{order.product_name}}</span>
-          <span style="width: 70px;">{{order.quantity}} 份</span>
-          <span style="width: 70px;">￥{{order.total_price}}</span>
+        <div *ngFor="let person of initOrders(data.orders)"
+             [class.my-order]="person.user?.id === store.user.id">
+          <div class="order-group">
+            <span style="width: 200px;">{{person.user?.username}}</span>
+            <span style="width: 80px;"></span>
+            <span style="width: 70px;">￥{{person.totalPrice}}</span>
+          </div>
+          <div *ngFor="let order of person.rows" class="order-group">
+            <span style="width: 10px;"></span>
+            <span style="width: 200px;">{{order.product_name}}</span>
+            <span style="width: 70px;">{{order.quantity}} 份</span>
+            <span style="width: 70px;">￥{{order.total_price}}</span>
+          </div>
         </div>
       </td>
     </tr>
