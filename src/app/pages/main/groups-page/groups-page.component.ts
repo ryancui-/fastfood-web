@@ -151,7 +151,7 @@ export class GroupsPageComponent implements OnInit {
 
   // 打开订单确认
   openOrderConfirm(product) {
-    if (!this.selectedGroup.id) {
+    if (!this.selectedGroup.id || this.isGroupExpired(this.selectedGroup.id)) {
       return;
     }
 
